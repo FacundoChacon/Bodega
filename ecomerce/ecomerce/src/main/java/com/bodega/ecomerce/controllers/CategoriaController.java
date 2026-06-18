@@ -19,13 +19,13 @@ public class CategoriaController {
     // GET: http://localhost:8080/api/categorias
     @GetMapping
     public ResponseEntity<List<Categoria>> listarCategorias() {
-        return ResponseEntity.ok(categoriaService.obtenerTodas());
+        return ResponseEntity.ok(categoriaService.obtenerTodas());  //200
     }
 
     // POST: http://localhost:8080/api/categorias
     @PostMapping
     public ResponseEntity<Categoria> crearCategoria(@RequestBody Categoria categoria) {
         Categoria nuevaCategoria = categoriaService.guardar(categoria);
-        return ResponseEntity.ok(nuevaCategoria);
+        return ResponseEntity.ok(nuevaCategoria);   //200
     }
 }
