@@ -8,7 +8,6 @@ const App = () => {
     const [vinos, setVinos] = useState([]);
     const [cargando, setCargando] = useState(true);
     const [carrito, setCarrito] = useState([]);
-
     const [verCarrito, setVerCarrito] = useState(false);
 
     useEffect(() => {
@@ -27,14 +26,27 @@ const App = () => {
     }, []);
 
     const agregarAlCarrito = (vino) => {
+        const vinoReal = vinos.find(v => v.id === vino.id);
+        const stockReal = vinoReal ? vinoReal.stock : 0;
+
         setCarrito((carritoActual) => {
             const existe = carritoActual.find(item => item.id === vino.id);
+
             if (existe) {
+                if (existe.cantidad >= stockReal) {
+                    alert(`Lo sentimos, no hay más stock disponible de ${vino.nombre} (Máximo: ${stockReal} unidades).`);
+                    return carritoActual;
+                }
+                
+                // Retornamos un nuevo array clonado con la cantidad actualizada
                 return carritoActual.map(item => 
                     item.id === vino.id ? { ...item, cantidad: item.cantidad + 1 } : item
                 );
             } else {
-                return [...carritoActual, { ...vino, cantidad: 1 }];
+                if (stockReal > 0) {
+                    return [...carritoActual, { ...vino, stock: stockReal, cantidad: 1 }];
+                }
+                return carritoActual;
             }
         });
     };
@@ -120,9 +132,19 @@ const App = () => {
                         {vinos.length === 0 ? (
                             <p style={{ fontFamily: '"Inter", sans-serif', color: '#777' }}>No hay vinos disponibles.</p>
                         ) : (
-                            vinos.map((vino) => (
-                                <TarjetaVino key={vino.id} vino={vino} alAgregarAlCarrito={agregarAlCarrito} />
-                            ))
+                            vinos.map((vino) => {
+                                const itemEnCarrito = carrito.find(item => item.id === vino.id);
+                                const cantidadActual = itemEnCarrito ? itemEnCarrito.cantidad : 0;
+                            
+                                return (
+                                    <TarjetaVino 
+                                        key={vino.id} 
+                                        vino={vino} 
+                                        alAgregarAlCarrito={agregarAlCarrito} 
+                                        cantidadEnCarrito={cantidadActual} // <-- Pasamos la cantidad actual como prop
+                                    />
+                                );
+                            })
                         )}
                     </div>
                 )}
@@ -135,6 +157,7 @@ const App = () => {
                 alConfirmarCompra={enviarPedidoAlBackend}
                 alRestarCantidad={restarDelCarrito}
                 alEliminarItem={eliminarDelCarrito}
+                alSumarCantidad={agregarAlCarrito}
             />
         </div>
     );

@@ -1,6 +1,6 @@
 import React from 'react';
 
-const CarritoModal = ({ mostrar, alCerrar, items, alConfirmarCompra, alRestarCantidad, alEliminarItem }) => {
+const CarritoModal = ({ mostrar, alCerrar, items, alConfirmarCompra, alSumarCantidad, alRestarCantidad, alEliminarItem }) => {
     if (!mostrar) return null;
 
     const precioTotal = items.reduce((acum, item) => acum + (item.precio * item.cantidad), 0);
@@ -32,6 +32,15 @@ const CarritoModal = ({ mostrar, alCerrar, items, alConfirmarCompra, alRestarCan
                                         >
                                             -
                                         </button>
+                                        
+                                        <button 
+                                            onClick={() => alSumarCantidad(item)}
+                                            style={styles.botonControl}
+                                            title="Sumar una unidad"
+                                        >
+                                            +
+                                        </button>
+                                        
                                         <button 
                                             onClick={() => alEliminarItem(item.id)} 
                                             style={styles.botonEliminar}

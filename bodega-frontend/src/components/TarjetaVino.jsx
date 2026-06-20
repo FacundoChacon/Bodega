@@ -1,11 +1,10 @@
 import React from 'react';
 
-const TarjetaVino = ({ vino, alAgregarAlCarrito }) => {
+const TarjetaVino = ({ vino, alAgregarAlCarrito, cantidadEnCarrito }) => {
+    const limiteAlcanzado = cantidadEnCarrito >= vino.stock;
+
     return (
         <div style={styles.card}>
-            <div style={styles.imagenContenedor}>
-                <div style={styles.botellaDummy}>🍷</div>
-            </div>
             <div style={styles.infoContenedor}>
                 <span style={styles.bodega}>{vino.bodega?.toUpperCase()}</span>
                 <h3 style={styles.nombre}>{vino.nombre}</h3>
@@ -21,13 +20,21 @@ const TarjetaVino = ({ vino, alAgregarAlCarrito }) => {
                     </span>
                 </div>
                 
-                {/* 2. Le agregamos el evento onClick pasándole el vino actual */}
                 <button 
-                    style={styles.botonAgregar} 
-                    disabled={vino.stock === 0}
+                    style={{
+                        ...styles.botonAgregar,
+                        backgroundColor: limiteAlcanzado ? '#888888' : '#1a1a1a', // Se pone gris si se bloquea
+                        cursor: limiteAlcanzado ? 'not-allowed' : 'pointer'
+                    }} 
+                    disabled={vino.stock === 0 || limiteAlcanzado}
                     onClick={() => alAgregarAlCarrito(vino)}
                 >
-                    {vino.stock > 0 ? 'AÑADIR A LA COLECCIÓN' : 'AGOTADO'}
+                    {vino.stock === 0 
+                        ? 'AGOTADO' 
+                        : limiteAlcanzado 
+                            ? 'LÍMITE ALCANZADO 🛑' 
+                            : 'AÑADIR A LA COLECCIÓN'
+                    }
                 </button>
             </div>
         </div>
@@ -38,7 +45,7 @@ const styles = {
     card: {
         backgroundColor: '#ffffff',
         border: '1px solid #f0f0f0',
-        borderRadius: '0px', // Estilo sofisticado de bordes rectos
+        borderRadius: '0px',
         width: '300px',
         display: 'flex',
         flexDirection: 'column',
