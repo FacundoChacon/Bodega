@@ -3,6 +3,7 @@ package com.bodega.ecomerce.controllers;
 import com.bodega.ecomerce.dto.CarritoDTO;
 import com.bodega.ecomerce.entities.Pedido;
 import com.bodega.ecomerce.services.PedidoService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,12 +16,13 @@ public class PedidoController {
     @Autowired
     private PedidoService pedidoService;
 
-    // POST: http://localhost:8080/api/pedidos
     @PostMapping
-    public ResponseEntity<?> registrarPedido(@RequestBody CarritoDTO carrito) {
+    public ResponseEntity<?> crearPedido(@Valid @RequestBody CarritoDTO carritoDTO) {
         try {
-            Pedido nuevoPedido = pedidoService.procesarCompra(carrito);
-            return ResponseEntity.ok(nuevoPedido);
+            Pedido pedidoProcesado = pedidoService.procesarCompra(carritoDTO);
+
+            return ResponseEntity.ok()
+                    .body("¡Compra confirmada! Pedido N° " + pedidoProcesado.getId() + " registrado con éxito. 🍷");
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

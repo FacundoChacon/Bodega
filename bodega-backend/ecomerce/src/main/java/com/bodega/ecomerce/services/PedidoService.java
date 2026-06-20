@@ -8,7 +8,7 @@ import com.bodega.ecomerce.entities.Vino;
 import com.bodega.ecomerce.repositories.DetallePedidoRepository;
 import com.bodega.ecomerce.repositories.PedidoRepository;
 import com.bodega.ecomerce.repositories.VinoRepository;
-import com.bodega.ecomerce.repositories.UsuarioRepository; // Asumiendo que creás esta interfaz básica heredando de JpaRepository
+import com.bodega.ecomerce.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
