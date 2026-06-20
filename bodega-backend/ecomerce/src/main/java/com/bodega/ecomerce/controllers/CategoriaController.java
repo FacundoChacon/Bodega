@@ -10,22 +10,20 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/categorias")
-@CrossOrigin(origins = "*") // Clave para que React no nos rebote por CORS en el futuro
+@CrossOrigin(origins = "*")
 public class CategoriaController {
 
     @Autowired
     private CategoriaService categoriaService;
 
-    // GET: http://localhost:8080/api/categorias
     @GetMapping
     public ResponseEntity<List<Categoria>> listarCategorias() {
-        return ResponseEntity.ok(categoriaService.obtenerTodas());  //200
+        return ResponseEntity.ok(categoriaService.obtenerTodas());
     }
 
-    // POST: http://localhost:8080/api/categorias
     @PostMapping
     public ResponseEntity<Categoria> crearCategoria(@RequestBody Categoria categoria) {
         Categoria nuevaCategoria = categoriaService.guardar(categoria);
-        return ResponseEntity.ok(nuevaCategoria);   //200
+        return ResponseEntity.ok(nuevaCategoria);
     }
 }

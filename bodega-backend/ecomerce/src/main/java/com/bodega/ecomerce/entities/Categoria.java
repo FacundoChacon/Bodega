@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "categoria")
-@Data // Genera automáticamente getters, setters, equals, hashCode y toString
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Categoria {

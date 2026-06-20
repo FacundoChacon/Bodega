@@ -29,7 +29,7 @@ public class PedidoService {
     private VinoRepository vinoRepository;
 
     @Autowired
-    private UsuarioRepository usuarioRepository; // Recordá crear esta interfaz básica en repositorios
+    private UsuarioRepository usuarioRepository;
 
     @Transactional
     public Pedido procesarCompra(CarritoDTO carrito) {

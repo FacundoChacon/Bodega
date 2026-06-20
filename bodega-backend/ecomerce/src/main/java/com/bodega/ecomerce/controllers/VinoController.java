@@ -1,13 +1,14 @@
 package com.bodega.ecomerce.controllers;
 
 import com.bodega.ecomerce.entities.Vino;
+import com.bodega.ecomerce.exceptions.RecursoNoEncontradoException;
 import com.bodega.ecomerce.services.VinoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/vinos")
@@ -18,30 +19,27 @@ public class VinoController {
     private VinoService vinoService;
 
     @GetMapping
-    public ResponseEntity<List<Vino>> listarVinos(@RequestParam(required = false) Integer categoriaId) {
-        if (categoriaId != null) {
-            return ResponseEntity.ok(vinoService.obtenerPorCategoria(categoriaId));
-        }
-        return ResponseEntity.ok(vinoService.obtenerTodos());   //200
+    public ResponseEntity<List<Vino>> listarVinos(
+            @RequestParam(required = false) String bodega,
+            @RequestParam(required = false) BigDecimal precioMin,
+            @RequestParam(required = false) BigDecimal precioMax,
+            @RequestParam(required = false) Integer categoriaId) {
+
+        List<Vino> vinosFiltrados = vinoService.obtenerVinosConFiltros(bodega, precioMin, precioMax, categoriaId);
+        return ResponseEntity.ok(vinosFiltrados);
     }
 
     @PostMapping
     public ResponseEntity<Vino> crearVino(@RequestBody Vino vino) {
         Vino nuevoVino = vinoService.guardar(vino);
-        return ResponseEntity.ok(nuevoVino);    //200
+        return ResponseEntity.ok(nuevoVino);
     }
 
-    // PUT: http://localhost:8080/api/vinos/1
     @PutMapping("/{id}")
     public ResponseEntity<Vino> actualizarVino(@PathVariable Integer id, @RequestBody Vino vinoDetalles) {
-        Optional<Vino> vinoExistente = vinoService.obtenerPorId(id);
+        Vino vino = vinoService.obtenerPorId(id)
+                .orElseThrow(() -> new RecursoNoEncontradoException("No se puede actualizar. El vino con ID: " + id + " no existe en la cava."));
 
-        if (vinoExistente.isEmpty()) {
-            return ResponseEntity.notFound().build();   //404
-        }
-
-        Vino vino = vinoExistente.get();
-        // SETS
         vino.setNombre(vinoDetalles.getNombre());
         vino.setBodega(vinoDetalles.getBodega());
         vino.setAnioCosecha(vinoDetalles.getAnioCosecha());
@@ -51,19 +49,15 @@ public class VinoController {
         vino.setCategoria(vinoDetalles.getCategoria());
 
         Vino vinoActualizado = vinoService.guardar(vino);
-        return ResponseEntity.ok(vinoActualizado);  //200
+        return ResponseEntity.ok(vinoActualizado);
     }
 
-    // DELETE: http://localhost:8080/api/vinos/1
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarVino(@PathVariable Integer id) {
-        Optional<Vino> vinoExistente = vinoService.obtenerPorId(id);
-
-        if (vinoExistente.isEmpty()) {
-            return ResponseEntity.notFound().build();   //404
-        }
+        vinoService.obtenerPorId(id)
+                .orElseThrow(() -> new RecursoNoEncontradoException("No se puede eliminar. El vino con ID: " + id + " no existe."));
 
         vinoService.eliminar(id);
-        return ResponseEntity.noContent().build();  //204
+        return ResponseEntity.noContent().build();
     }
 }
