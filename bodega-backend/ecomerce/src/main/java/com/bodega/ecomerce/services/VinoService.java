@@ -28,7 +28,7 @@ public class VinoService {
             CampoOrdenamientoProducto criterioOrden,
             String direccionOrden
     ) {
-        Specification<Vino> spec = Specification.where((Specification<Vino>) null);
+        Specification<Vino> spec = Specification.where((root, query, criteriaBuilder) -> criteriaBuilder.conjunction());
 
         if (bodega != null) spec = spec.and(VinoSpecification.porBodega(bodega));
         if (precioMin != null) spec = spec.and(VinoSpecification.precioMayorOIgualA(precioMin));

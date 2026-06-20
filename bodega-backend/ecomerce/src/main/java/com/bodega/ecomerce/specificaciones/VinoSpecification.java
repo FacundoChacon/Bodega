@@ -6,10 +6,9 @@ import java.math.BigDecimal;
 
 public class VinoSpecification {
 
-    // FILTRO POR BODEGA (no case sensitive)
     public static Specification<Vino> porBodega(String bodega) {
         return (root, query, criteriaBuilder) -> {
-            if (bodega == null || bodega.trim().isEmpty()) return null;
+            if (bodega == null || bodega.trim().isEmpty()) return null; // <-- Clave
             return criteriaBuilder.like(
                     criteriaBuilder.lower(root.get("bodega")),
                     "%" + bodega.toLowerCase() + "%"
@@ -17,7 +16,6 @@ public class VinoSpecification {
         };
     }
 
-    // PRECIO MINIMO
     public static Specification<Vino> precioMayorOIgualA(BigDecimal precioMin) {
         return (root, query, criteriaBuilder) -> {
             if (precioMin == null) return null;
@@ -25,7 +23,6 @@ public class VinoSpecification {
         };
     }
 
-    // PRECIO MAXIMO
     public static Specification<Vino> precioMenorOIgualA(BigDecimal precioMax) {
         return (root, query, criteriaBuilder) -> {
             if (precioMax == null) return null;
@@ -33,7 +30,6 @@ public class VinoSpecification {
         };
     }
 
-    // CATEGORIA POR ID
     public static Specification<Vino> porCategoria(Integer categoriaId) {
         return (root, query, criteriaBuilder) -> {
             if (categoriaId == null) return null;
