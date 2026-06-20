@@ -1,6 +1,6 @@
 import React from 'react';
 
-const CarritoModal = ({ mostrar, alCerrar, items, alConfirmarCompra }) => {
+const CarritoModal = ({ mostrar, alCerrar, items, alConfirmarCompra, alRestarCantidad, alEliminarItem }) => {
     if (!mostrar) return null;
 
     const precioTotal = items.reduce((acum, item) => acum + (item.precio * item.cantidad), 0);
@@ -19,11 +19,27 @@ const CarritoModal = ({ mostrar, alCerrar, items, alConfirmarCompra }) => {
                     ) : (
                         items.map((item) => (
                             <div key={item.id} style={styles.itemCard}>
-                                <div>
+                                <div style={styles.itemInfo}>
                                     <h4 style={styles.itemNombre}>{item.nombre}</h4>
                                     <p style={styles.itemDetalle}>
                                         {item.cantidad} x ${item.precio?.toLocaleString('es-AR')}
                                     </p>
+                                    <div style={styles.controlesContenedor}>
+                                        <button 
+                                            onClick={() => alRestarCantidad(item.id)} 
+                                            style={styles.botonControl}
+                                            title="Restar una unidad"
+                                        >
+                                            -
+                                        </button>
+                                        <button 
+                                            onClick={() => alEliminarItem(item.id)} 
+                                            style={styles.botonEliminar}
+                                            title="Quitar de la colección"
+                                        >
+                                            🗑️ Quitar
+                                        </button>
+                                    </div>
                                 </div>
                                 <span style={styles.itemSubtotal}>
                                     ${(item.precio * item.cantidad).toLocaleString('es-AR')}
@@ -111,6 +127,11 @@ const styles = {
         paddingBottom: '15px',
         borderBottom: '1px solid #f9f9f9'
     },
+    itemInfo: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '4px'
+    },
     itemNombre: {
         margin: 0,
         fontSize: '15px',
@@ -118,9 +139,38 @@ const styles = {
         color: '#1a1a1a'
     },
     itemDetalle: {
-        margin: '4px 0 0 0',
+        margin: 0,
         fontSize: '13px',
         color: '#777'
+    },
+    controlesContenedor: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px',
+        marginTop: '6px'
+    },
+    botonControl: {
+        backgroundColor: '#f5f5f5',
+        border: '1px solid #e0e0e0',
+        width: '24px',
+        height: '24px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        cursor: 'pointer',
+        fontSize: '14px',
+        fontWeight: 'bold',
+        color: '#333',
+        borderRadius: '2px'
+    },
+    botonEliminar: {
+        background: 'none',
+        border: 'none',
+        color: '#c62828',
+        fontSize: '12px',
+        cursor: 'pointer',
+        padding: 0,
+        fontFamily: '"Inter", sans-serif'
     },
     itemSubtotal: {
         fontWeight: '600',

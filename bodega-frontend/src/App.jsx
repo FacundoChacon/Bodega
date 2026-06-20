@@ -2,14 +2,13 @@ import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import TarjetaVino from './components/TarjetaVino';
-import CarritoModal from './components/CarritoModal'; // Importamos el modal nuevo
+import CarritoModal from './components/CarritoModal';
 
 const App = () => {
     const [vinos, setVinos] = useState([]);
     const [cargando, setCargando] = useState(true);
     const [carrito, setCarrito] = useState([]);
-    
-    // 🔥 NUEVO: Estado para abrir/cerrar la ventana del carrito
+
     const [verCarrito, setVerCarrito] = useState(false);
 
     useEffect(() => {
@@ -40,11 +39,29 @@ const App = () => {
         });
     };
 
-    // 🔥 NUEVO: Función para despachar el pedido por POST a Spring Boot
+    const restarDelCarrito = (vinoId) => {
+        setCarrito((carritoActual) => {
+            const itemExistente = carritoActual.find(item => item.id === vinoId);
+
+            if (itemExistente.cantidad === 1) {
+                return carritoActual.filter(item => item.id !== vinoId);
+            } else {
+                return carritoActual.map(item =>
+                    item.id === vinoId ? { ...item, cantidad: item.cantidad - 1 } : item
+                );
+            }
+        });
+    };
+
+    const eliminarDelCarrito = (vinoId) => {
+        setCarrito((carritoActual) => 
+            carritoActual.filter(item => item.id !== vinoId)
+        );
+    };
+
     const enviarPedidoAlBackend = async () => {
-        // Estructuramos el JSON mapeándolo con el CarritoDTO de tu backend
         const pedidoDTO = {
-            usuarioId: 1, // Usuario de prueba insertado previamente en tu MySQL
+            usuarioId: 1,
             items: carrito.map(item => ({
                 vinoId: item.id,
                 cantidad: item.cantidad
@@ -62,10 +79,9 @@ const App = () => {
 
             if (respuesta.ok) {
                 alert("¡Compra confirmada! Tu pedido ha sido registrado en la base de datos de la bodega. 🍷");
-                setCarrito([]); // Vaciamos el carrito en el frontend
-                setVerCarrito(false); // Cerramos la ventana
+                setCarrito([]);
+                setVerCarrito(false);
                 
-                // Opcional: Recargar la lista de vinos para ver reflejado el nuevo stock descontado
                 const resVinos = await fetch('http://localhost:8080/api/vinos');
                 const nuevosVinos = await resVinos.json();
                 setVinos(nuevosVinos);
@@ -83,7 +99,6 @@ const App = () => {
 
     return (
         <div style={{ backgroundColor: '#fdfdfb', minHeight: '100vh' }}>
-            {/* Pasamos la función para abrir el modal */}
             <Navbar cantidadCarrito={totalBotellas} alAbrirCarrito={() => setVerCarrito(true)} />
 
             <Hero />
@@ -113,12 +128,13 @@ const App = () => {
                 )}
             </main>
 
-            {/* 🔥 NUEVO: Renderizado condicional del Modal de Carrito */}
             <CarritoModal 
                 mostrar={verCarrito} 
                 alCerrar={() => setVerCarrito(false)} 
                 items={carrito} 
                 alConfirmarCompra={enviarPedidoAlBackend}
+                alRestarCantidad={restarDelCarrito}
+                alEliminarItem={eliminarDelCarrito}
             />
         </div>
     );
