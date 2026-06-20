@@ -1,6 +1,7 @@
 package com.bodega.ecomerce.controllers;
 
 import com.bodega.ecomerce.entities.Vino;
+import com.bodega.ecomerce.enums.CampoOrdenamientoProducto;
 import com.bodega.ecomerce.exceptions.RecursoNoEncontradoException;
 import com.bodega.ecomerce.services.VinoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +24,16 @@ public class VinoController {
             @RequestParam(required = false) String bodega,
             @RequestParam(required = false) BigDecimal precioMin,
             @RequestParam(required = false) BigDecimal precioMax,
-            @RequestParam(required = false) Integer categoriaId) {
+            @RequestParam(required = false) Integer categoriaId,
+            @RequestParam(defaultValue = "NOMBRE") CampoOrdenamientoProducto ordenarPor,
+            @RequestParam(defaultValue = "ASC") String ordenDireccion
+    ) {
 
-        List<Vino> vinosFiltrados = vinoService.obtenerVinosConFiltros(bodega, precioMin, precioMax, categoriaId);
-        return ResponseEntity.ok(vinosFiltrados);
+        List<Vino> vinosFiltradosYOrdenados = vinoService.obtenerVinosConFiltros(
+                bodega, precioMin, precioMax, categoriaId, ordenarPor, ordenDireccion
+        );
+
+        return ResponseEntity.ok(vinosFiltradosYOrdenados);
     }
 
     @PostMapping
@@ -47,7 +54,6 @@ public class VinoController {
         vino.setStock(vinoDetalles.getStock());
         vino.setDescripcion(vinoDetalles.getDescripcion());
         vino.setCategoria(vinoDetalles.getCategoria());
-
         Vino vinoActualizado = vinoService.guardar(vino);
         return ResponseEntity.ok(vinoActualizado);
     }

@@ -1,9 +1,11 @@
 package com.bodega.ecomerce.services;
 
 import com.bodega.ecomerce.entities.Vino;
+import com.bodega.ecomerce.enums.CampoOrdenamientoProducto;
 import com.bodega.ecomerce.repositories.VinoRepository;
 import com.bodega.ecomerce.specificaciones.VinoSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -17,26 +19,37 @@ public class VinoService {
     @Autowired
     private VinoRepository vinoRepository;
 
-    public List<Vino> obtenerVinosConFiltros(String bodega, BigDecimal precioMin, BigDecimal precioMax, Integer categoriaId) {
+    // FILTROS Y ORDENAMIENTOS
+    public List<Vino> obtenerVinosConFiltros(
+            String bodega,
+            BigDecimal precioMin,
+            BigDecimal precioMax,
+            Integer categoriaId,
+            CampoOrdenamientoProducto criterioOrden,
+            String direccionOrden
+    ) {
         Specification<Vino> spec = Specification.where((Specification<Vino>) null);
 
-        // Vamos encadenando dinámicamente los filtros SÓLO si el usuario los completó en el frontend
-        if (bodega != null) {
-            spec = spec.and(VinoSpecification.porBodega(bodega));
-        }
-        if (precioMin != null) {
-            spec = spec.and(VinoSpecification.precioMayorOIgualA(precioMin));
-        }
-        if (precioMax != null) {
-            spec = spec.and(VinoSpecification.precioMenorOIgualA(precioMax));
-        }
-        if (categoriaId != null) {
-            spec = spec.and(VinoSpecification.porCategoria(categoriaId));
+        if (bodega != null) spec = spec.and(VinoSpecification.porBodega(bodega));
+        if (precioMin != null) spec = spec.and(VinoSpecification.precioMayorOIgualA(precioMin));
+        if (precioMax != null) spec = spec.and(VinoSpecification.precioMenorOIgualA(precioMax));
+        if (categoriaId != null) spec = spec.and(VinoSpecification.porCategoria(categoriaId));
+
+        Sort sort = Sort.unsorted();
+
+        if (criterioOrden != null) {
+            String campoReal = criterioOrden.getCampoEntidad();
+
+            if ("DESC".equalsIgnoreCase(direccionOrden)) {
+                sort = Sort.by(campoReal).descending();
+            } else {
+                sort = Sort.by(campoReal).ascending();
+            }
         }
 
-        // Ejecuta la query final armada a medida
-        return vinoRepository.findAll(spec);
+        return vinoRepository.findAll(spec, sort);
     }
+
 
     //  LISTA TODOS
     public List<Vino> obtenerTodos() {
