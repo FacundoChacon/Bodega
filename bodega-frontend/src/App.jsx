@@ -1,15 +1,127 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import React, { useState, useEffect } from 'react';
+import Navbar from './components/Navbar';
+import Hero from './components/Hero';
+import TarjetaVino from './components/TarjetaVino';
+import CarritoModal from './components/CarritoModal'; // Importamos el modal nuevo
 
-function App() {
-  const [count, setCount] = useState(0)
+const App = () => {
+    const [vinos, setVinos] = useState([]);
+    const [cargando, setCargando] = useState(true);
+    const [carrito, setCarrito] = useState([]);
+    
+    // 🔥 NUEVO: Estado para abrir/cerrar la ventana del carrito
+    const [verCarrito, setVerCarrito] = useState(false);
 
-  return (
-    <h1>"Hola mundo - Bodega Maipu"</h1>
-  )
-}
+    useEffect(() => {
+        const traerVinosDesdeBackend = async () => {
+            try {
+                const respuesta = await fetch('http://localhost:8080/api/vinos');
+                const datos = await respuesta.json();
+                setVinos(datos);
+                setCargando(false);
+            } catch (error) {
+                console.error("Error conectando a la API de la bodega:", error);
+                setCargando(false);
+            }
+        };
+        traerVinosDesdeBackend();
+    }, []);
 
-export default App
+    const agregarAlCarrito = (vino) => {
+        setCarrito((carritoActual) => {
+            const existe = carritoActual.find(item => item.id === vino.id);
+            if (existe) {
+                return carritoActual.map(item => 
+                    item.id === vino.id ? { ...item, cantidad: item.cantidad + 1 } : item
+                );
+            } else {
+                return [...carritoActual, { ...vino, cantidad: 1 }];
+            }
+        });
+    };
+
+    // 🔥 NUEVO: Función para despachar el pedido por POST a Spring Boot
+    const enviarPedidoAlBackend = async () => {
+        // Estructuramos el JSON mapeándolo con el CarritoDTO de tu backend
+        const pedidoDTO = {
+            usuarioId: 1, // Usuario de prueba insertado previamente en tu MySQL
+            items: carrito.map(item => ({
+                vinoId: item.id,
+                cantidad: item.cantidad
+            }))
+        };
+
+        try {
+            const respuesta = await fetch('http://localhost:8080/api/pedidos', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(pedidoDTO)
+            });
+
+            if (respuesta.ok) {
+                alert("¡Compra confirmada! Tu pedido ha sido registrado en la base de datos de la bodega. 🍷");
+                setCarrito([]); // Vaciamos el carrito en el frontend
+                setVerCarrito(false); // Cerramos la ventana
+                
+                // Opcional: Recargar la lista de vinos para ver reflejado el nuevo stock descontado
+                const resVinos = await fetch('http://localhost:8080/api/vinos');
+                const nuevosVinos = await resVinos.json();
+                setVinos(nuevosVinos);
+            } else {
+                const mensajeError = await respuesta.text();
+                alert(`Error al procesar la compra: ${mensajeError}`);
+            }
+        } catch (error) {
+            console.error("Error al enviar el pedido:", error);
+            alert("Hubo un problema de conexión con el servidor.");
+        }
+    };
+
+    const totalBotellas = carrito.reduce((acum, item) => acum + item.cantidad, 0);
+
+    return (
+        <div style={{ backgroundColor: '#fdfdfb', minHeight: '100vh' }}>
+            {/* Pasamos la función para abrir el modal */}
+            <Navbar cantidadCarrito={totalBotellas} alAbrirCarrito={() => setVerCarrito(true)} />
+
+            <Hero />
+
+            <main id="cava" style={{ padding: '60px 40px', maxWidth: '1200px', margin: '0 auto' }}>
+                <h2 style={{ fontFamily: '"Playfair Display", serif', fontSize: '32px', textAlign: 'center', color: '#1a1a1a', fontWeight: '400' }}>
+                    Nuestra Cava Seleccionada
+                </h2>
+                <p style={{ fontFamily: '"Inter", sans-serif', textAlign: 'center', color: '#666', marginBottom: '40px' }}>
+                    Cada botella representa la máxima expresión de nuestro terruño.
+                </p>
+
+                {cargando ? (
+                    <h3 style={{ textAlign: 'center', fontFamily: '"Playfair Display", serif', color: '#722f37' }}>
+                        Cargando la cava... 🍷
+                    </h3>
+                ) : (
+                    <div style={{ display: 'flex', gap: '30px', flexWrap: 'wrap', justifyContent: 'center' }}>
+                        {vinos.length === 0 ? (
+                            <p style={{ fontFamily: '"Inter", sans-serif', color: '#777' }}>No hay vinos disponibles.</p>
+                        ) : (
+                            vinos.map((vino) => (
+                                <TarjetaVino key={vino.id} vino={vino} alAgregarAlCarrito={agregarAlCarrito} />
+                            ))
+                        )}
+                    </div>
+                )}
+            </main>
+
+            {/* 🔥 NUEVO: Renderizado condicional del Modal de Carrito */}
+            <CarritoModal 
+                mostrar={verCarrito} 
+                alCerrar={() => setVerCarrito(false)} 
+                items={carrito} 
+                alConfirmarCompra={enviarPedidoAlBackend}
+            />
+        </div>
+    );
+};
+
+export default App;
