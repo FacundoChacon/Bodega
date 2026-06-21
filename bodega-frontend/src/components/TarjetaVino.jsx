@@ -8,20 +8,13 @@ const TarjetaVino = ({ vino, alAgregarAlCarrito, cantidadEnCarrito }) => {
     const manejarClickAgregar = () => {
         if (!limiteAlcanzado && vino.stock > 0) {
             alAgregarAlCarrito(vino);
-
-            // ANIMACION: Dispara el estado para mostrar el check y texto "Vino Añadido"
-            setAñadidoRecientemente(true);
-
-            // APARECE EL CHECK Y TEXTO "VINO AÑADIDO" POR UN TIEMPO Y LUEGO DESAPARECE
-            setTimeout(() => {
-                setAñadidoRecientemente(false);
-            }, 400); // Duración total de la animación representada en ms
+            const evento = new CustomEvent('vinoAnadido');
+            window.dispatchEvent(evento);
         }
     };
 
     return (
         <div style={styles.card}>
-            {/* EL SUPERPUESTO DE ANIMACIÓN */}
             {añadidoRecientemente && (
                 <div style={styles.añadidoOverlay}>
                     <div style={styles.añadidoContenido}>
@@ -83,35 +76,6 @@ const styles = {
         overflow: 'hidden'
     },
     // ANIMACION
-    añadidoOverlay: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        backgroundColor: 'rgba(114, 47, 55, 0.95)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 20,
-        animation: 'aparecerDifuminado 0.3s ease-out'
-    },
-    añadidoContenido: {
-        textAlign: 'center',
-        color: '#ffffff'
-    },
-    checkIcon: {
-        fontSize: '48px',
-        display: 'block',
-        marginBottom: '10px'
-    },
-    añadidoTexto: {
-        fontFamily: '"Inter", sans-serif',
-        fontSize: '14px',
-        letterSpacing: '2px',
-        fontWeight: 'bold',
-        margin: 0
-    },
     imagenContenedor: {
         backgroundColor: '#fbfaf8',
         height: '240px',

@@ -1,8 +1,25 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import ItemCarritoAnimado from './ItemCarritoAnimado';
 
 const CarritoModal = ({ mostrar, alCerrar, items, alConfirmarCompra, alSumarCantidad, alRestarCantidad, alEliminarItem }) => {
-    
+    // 1. Estado local para controlar el destello de inversión de color en todo el módulo
+    const [hacerDestello, setHacerDestello] = useState(false);
+
     const precioTotal = items.reduce((acum, item) => acum + (item.precio * item.cantidad), 0);
+    const totalBotellas = items.reduce((acum, item) => acum + item.cantidad, 0);
+
+    // 2. EFECTO CLAVE: Cada vez que el número total de botellas aumente, se dispara la inversión de color
+    useEffect(() => {
+        if (totalBotellas > 0 && mostrar) {
+            setHacerDestello(true);
+            const timer = setTimeout(() => setHacerDestello(false), 450); // Duración del destello
+            return () => clearTimeout(timer);
+        }
+    }, [totalBotellas, mostrar]);
+
+    // 3. Paleta de colores para la inversión
+    const colorVino = '#722f37';
+    const colorBlanco = '#ffffff';
 
     return (
         <div 
@@ -17,66 +34,62 @@ const CarritoModal = ({ mostrar, alCerrar, items, alConfirmarCompra, alSumarCant
                 onClick={(e) => e.stopPropagation()} 
                 style={{
                     ...styles.sidebar,
-                    transform: mostrar ? 'translateX(0)' : 'translateX(100%)', 
+                    transform: mostrar ? 'translateX(0)' : 'translateX(100%)',
+                    // 👇 AQUÍ SE APLICA LA INVERSIÓN TOTAL DE COLORES EN LA CAJA DEL MÓDULO
+                    backgroundColor: hacerDestello ? colorVino : 'rgba(255, 255, 255, 0.85)',
+                    color: hacerDestello ? colorBlanco : '#1a1a1a',
                 }}
             >
-                <div style={styles.header}>
-                    <h2 style={styles.titulo}>TU COLECCIÓN</h2>
-                    <button onClick={alCerrar} style={styles.botonCerrar}>✕</button>
+                {/* Modificamos los textos internos para que hereden el color blanco durante el destello */}
+                <div style={{...styles.header, borderColor: hacerDestello ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.05)'}}>
+                    <h2 style={{ ...styles.titulo, color: hacerDestello ? colorBlanco : '#1a1a1a' }}>
+                        TU COLECCIÓN
+                    </h2>
+                    <button 
+                        onClick={alCerrar} 
+                        style={{ ...styles.botonCerrar, color: hacerDestello ? colorBlanco : '#888' }}
+                    >
+                        ✕
+                    </button>
                 </div>
 
                 <div style={styles.listaContenedor}>
                     {items.length === 0 ? (
-                        <p style={styles.vacio}>Tu carrito está vacío.</p>
+                        <p style={{ ...styles.vacio, color: hacerDestello ? colorBlanco : '#777' }}>
+                            Tu carrito está vacío.
+                        </p>
                     ) : (
                         items.map((item) => (
-                            <div key={item.id} style={styles.itemCard}>
-                                <div style={styles.itemInfo}>
-                                    <h4 style={styles.itemNombre}>{item.nombre}</h4>
-                                    <p style={styles.itemDetalle}>
-                                        {item.cantidad} x ${item.precio?.toLocaleString('es-AR')}
-                                    </p>
-                                    <div style={styles.controlesContenedor}>
-                                        <button 
-                                            onClick={() => alRestarCantidad(item.id)} 
-                                            style={styles.botonControl}
-                                            title="Restar una unidad"
-                                        >
-                                            -
-                                        </button>
-                                        
-                                        <button 
-                                            onClick={() => alSumarCantidad(item)}
-                                            style={styles.botonControl}
-                                            title="Sumar una unidad"
-                                        >
-                                            +
-                                        </button>
-                                        
-                                        <button 
-                                            onClick={() => alEliminarItem(item.id)} 
-                                            style={styles.botonEliminar}
-                                            title="Quitar de la colección"
-                                        >
-                                            🗑️ Quitar
-                                        </button>
-                                    </div>
-                                </div>
-                                <span style={styles.itemSubtotal}>
-                                    ${(item.precio * item.cantidad).toLocaleString('es-AR')}
-                                </span>
-                            </div>
+                            <ItemCarritoAnimado 
+                                key={item.id}
+                                item={item}
+                                alSumarCantidad={alSumarCantidad}
+                                alRestarCantidad={alRestarCantidad}
+                                alEliminarItem={alEliminarItem}
+                                // Pasamos el estado por si las letras de los ítems necesitan cambiar a blanco
+                                modoInvertido={hacerDestello} 
+                            />
                         ))
                     )}
                 </div>
 
                 {items.length > 0 && (
-                    <div style={styles.footer}>
-                        <div style={styles.totalContenedor}>
+                    <div style={{...styles.footer, borderTopColor: hacerDestello ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.08)'}}>
+                        <div style={{...styles.totalContenedor, color: hacerDestello ? colorBlanco : '#1a1a1a'}}>
                             <span>TOTAL:</span>
-                            <span style={styles.totalPrecio}>${precioTotal.toLocaleString('es-AR')}</span>
+                            <span style={{...styles.totalPrecio, color: hacerDestello ? colorBlanco : '#722f37'}}>
+                                ${precioTotal.toLocaleString('es-AR')}
+                            </span>
                         </div>
-                        <button onClick={alConfirmarCompra} style={styles.botonConfirmar}>
+                        <button 
+                            onClick={alConfirmarCompra} 
+                            style={{
+                                ...styles.botonConfirmar,
+                                // Inversión en el botón de confirmación para que no se pierda de vista
+                                backgroundColor: hacerDestello ? colorBlanco : colorVino,
+                                color: hacerDestello ? colorVino : colorBlanco,
+                            }}
+                        >
                             CONFIRMAR COMPRA 🍷
                         </button>
                     </div>
@@ -87,160 +100,17 @@ const CarritoModal = ({ mostrar, alCerrar, items, alConfirmarCompra, alSumarCant
 };
 
 const styles = {
-    overlay: {
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.15)', 
-        zIndex: 2000,
-        display: 'flex',
-        justifyContent: 'flex-end',
-        transition: 'opacity 0.4s ease, visibility 0.4s ease',
-        cursor: 'pointer'
-    },
-    sidebar: {
-        width: '400px',
-        backgroundColor: 'rgba(255, 255, 255, 0.85)', 
-        backdropFilter: 'blur(15px)', 
-        WebkitBackdropFilter: 'blur(15px)',
-        height: '100%',
-        boxShadow: '-8px 0 30px rgba(0,0,0,0.15)',
-        display: 'flex',
-        flexDirection: 'column',
-        fontFamily: '"Inter", sans-serif',
-        padding: '30px',
-        boxSizing: 'border-box',
-        transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-        cursor: 'default'
-    },
-    header: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        borderBottom: '1px solid rgba(0,0,0,0.05)',
-        paddingBottom: '15px'
-    },
-    titulo: {
-        fontFamily: '"Playfair Display", serif',
-        fontSize: '22px',
-        margin: 0,
-        letterSpacing: '1px',
-        color: '#1a1a1a'
-    },
-    botonCerrar: {
-        background: 'none',
-        border: 'none',
-        fontSize: '20px',
-        cursor: 'pointer',
-        color: '#888'
-    },
-    listaContenedor: {
-        flex: 1,
-        overflowY: 'auto',
-        marginTop: '20px',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '15px',
-        paddingRight: '5px'
-    },
-    vacio: {
-        color: '#777',
-        textAlign: 'center',
-        marginTop: '40px'
-    },
-    itemCard: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingBottom: '15px',
-        borderBottom: '1px solid rgba(0,0,0,0.03)'
-    },
-    itemInfo: {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '4px'
-    },
-    itemNombre: {
-        margin: 0,
-        fontSize: '15px',
-        fontWeight: '500',
-        color: '#1a1a1a'
-    },
-    itemDetalle: {
-        margin: 0,
-        fontSize: '13px',
-        color: '#666'
-    },
-    controlesContenedor: {
-        display: 'flex',
-        alignItems: 'center',
-        gap: '12px',
-        marginTop: '6px'
-    },
-    botonControl: {
-        backgroundColor: 'rgba(0,0,0,0.04)',
-        border: '1px solid rgba(0,0,0,0.05)',
-        width: '24px',
-        height: '24px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        cursor: 'pointer',
-        fontSize: '14px',
-        fontWeight: 'bold',
-        color: '#333',
-        borderRadius: '2px'
-    },
-    botonEliminar: {
-        background: 'none',
-        border: 'none',
-        color: '#c62828',
-        fontSize: '12px',
-        cursor: 'pointer',
-        padding: 0,
-        fontFamily: '"Inter", sans-serif'
-    },
-    itemSubtotal: {
-        fontWeight: '600',
-        color: '#722f37',
-        fontSize: '15px'
-    },
-    footer: {
-        borderTop: '1px solid rgba(0,0,0,0.08)',
-        paddingTop: '20px',
-        marginTop: 'auto', 
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '15px',
-        backgroundColor: 'transparent',
-        paddingBottom: '10px' 
-    },
-    totalContenedor: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        fontWeight: 'bold',
-        fontSize: '16px',
-        letterSpacing: '1px',
-        color: '#1a1a1a'
-    },
-    totalPrecio: {
-        color: '#722f37',
-        fontSize: '18px'
-    },
-    botonConfirmar: {
-        backgroundColor: '#722f37',
-        color: '#ffffff',
-        border: 'none',
-        padding: '16px', 
-        fontWeight: '600',
-        letterSpacing: '2px',
-        cursor: 'pointer',
-        transition: 'background-color 0.2s, transform 0.1s',
-        fontSize: '13px',
-        boxShadow: '0 4px 12px rgba(114, 47, 55, 0.2)', 
-    }
+    overlay: { position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.15)', zIndex: 2000, display: 'flex', justifyContent: 'flex-end', transition: 'opacity 0.4s ease, visibility 0.4s ease', cursor: 'pointer' },
+    sidebar: { width: '400px', backdropFilter: 'blur(15px)', WebkitBackdropFilter: 'blur(15px)', height: '100%', boxShadow: '-8px 0 30px rgba(0,0,0,0.15)', display: 'flex', flexDirection: 'column', fontFamily: '"Inter", sans-serif', padding: '30px', boxSizing: 'border-box', cursor: 'default', transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.25s ease, color 0.25s ease' },
+    header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid', paddingBottom: '15px', transition: 'border-color 0.25s ease' },
+    titulo: { fontFamily: '"Playfair Display", serif', fontSize: '22px', margin: 0, letterSpacing: '1px', transition: 'color 0.25s ease' },
+    botonCerrar: { background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer', transition: 'color 0.25s ease' },
+    listaContenedor: { flex: 1, overflowY: 'auto', marginTop: '20px', display: 'flex', flexDirection: 'column', gap: '15px', paddingRight: '5px' },
+    vacio: { textAlign: 'center', marginTop: '40px', transition: 'color 0.25s ease' },
+    footer: { borderTop: '1px solid', paddingTop: '20px', marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '15px', backgroundColor: 'transparent', paddingBottom: '10px', transition: 'border-color 0.25s ease' },
+    totalContenedor: { display: 'flex', justifyContent: 'space-between', fontWeight: 'bold', fontSize: '16px', letterSpacing: '1px', transition: 'color 0.25s ease' },
+    totalPrecio: { fontSize: '18px', transition: 'color 0.25s ease' },
+    botonConfirmar: { border: 'none', padding: '16px', fontWeight: '600', letterSpacing: '2px', cursor: 'pointer', fontSize: '13px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)', transition: 'background-color 0.25s ease, color 0.25s ease' }
 };
 
 export default CarritoModal;

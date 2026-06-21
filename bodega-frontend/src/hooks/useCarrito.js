@@ -2,9 +2,16 @@ import { useState } from 'react';
 
 export const useCarrito = (setVerCarrito, setPaginaActual) => {
     const [carrito, setCarrito] = useState([]);
+    // 👇 Nuevo estado para avisarle a la Navbar que tire el destello
+    const [animarBoton, setAnimarBoton] = useState(false);
 
     const agregarAlCarrito = (vino) => {
         const stockReal = vino.stock; 
+        
+        // Disparamos la animación visual en la Navbar 🚀
+        setAnimarBoton(true);
+        setTimeout(() => setAnimarBoton(false), 400);
+
         setCarrito((carritoActual) => {
             const existe = carritoActual.find(item => item.id === vino.id);
             if (existe) {
@@ -72,6 +79,7 @@ export const useCarrito = (setVerCarrito, setPaginaActual) => {
     return {
         carrito,
         totalBotellas,
+        animarBoton, // 👈 Lo exportamos para pasárselo a la Navbar
         agregarAlCarrito,
         restarDelCarrito,
         eliminarDelCarrito,
