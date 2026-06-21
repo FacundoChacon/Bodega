@@ -1,17 +1,44 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const TarjetaVino = ({ vino, alAgregarAlCarrito, cantidadEnCarrito }) => {
+    const [añadidoRecientemente, setAñadidoRecientemente] = useState(false);
+
     const limiteAlcanzado = cantidadEnCarrito >= vino.stock;
     const stockVisualRestante = vino.stock - cantidadEnCarrito;
+    const manejarClickAgregar = () => {
+        if (!limiteAlcanzado && vino.stock > 0) {
+            alAgregarAlCarrito(vino);
+
+            // ANIMACION: Dispara el estado para mostrar el check y texto "Vino Añadido"
+            setAñadidoRecientemente(true);
+
+            // APARECE EL CHECK Y TEXTO "VINO AÑADIDO" POR 1 SEGUNDO
+            setTimeout(() => {
+                setAñadidoRecientemente(false);
+            }, 400);
+        }
+    };
 
     return (
         <div style={styles.card}>
+            {/* EL SUPERPUESTO DE ANIMACIÓN */}
+            {añadidoRecientemente && (
+                <div style={styles.añadidoOverlay}>
+                    <div style={styles.añadidoContenido}>
+                        <span style={styles.checkIcon}>✓</span>
+                        <p style={styles.añadidoTexto}>Vino Añadido</p>
+                    </div>
+                </div>
+            )}
+
             <div style={styles.infoContenedor}>
                 <span style={styles.bodega}>{vino.bodega?.toUpperCase()}</span>
                 <h3 style={styles.nombre}>{vino.nombre}</h3>
                 <p style={styles.detalle}>Año {vino.anioCosecha} · Edición Limitada</p>
+                
                 <div style={styles.footerCard}>
                     <span style={styles.precio}>${vino.precio?.toLocaleString('es-AR')}</span>
+                    
                     <span style={{ 
                         fontSize: '12px', 
                         fontWeight: 'bold',
@@ -28,7 +55,7 @@ const TarjetaVino = ({ vino, alAgregarAlCarrito, cantidadEnCarrito }) => {
                         cursor: limiteAlcanzado ? 'not-allowed' : 'pointer'
                     }} 
                     disabled={vino.stock === 0 || limiteAlcanzado}
-                    onClick={() => alAgregarAlCarrito(vino)}
+                    onClick={manejarClickAgregar}
                 >
                     {vino.stock === 0 
                         ? 'AGOTADO' 
@@ -51,7 +78,39 @@ const styles = {
         display: 'flex',
         flexDirection: 'column',
         transition: 'transform 0.3s, box-shadow 0.3s',
-        fontFamily: '"Inter", sans-serif'
+        fontFamily: '"Inter", sans-serif',
+        position: 'relative',
+        overflow: 'hidden'
+    },
+    // ANIMACION
+    añadidoOverlay: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        backgroundColor: 'rgba(114, 47, 55, 0.95)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 20,
+        animation: 'aparecerDifuminado 0.3s ease-out'
+    },
+    añadidoContenido: {
+        textAlign: 'center',
+        color: '#ffffff'
+    },
+    checkIcon: {
+        fontSize: '48px',
+        display: 'block',
+        marginBottom: '10px'
+    },
+    añadidoTexto: {
+        fontFamily: '"Inter", sans-serif',
+        fontSize: '14px',
+        letterSpacing: '2px',
+        fontWeight: 'bold',
+        margin: 0
     },
     imagenContenedor: {
         backgroundColor: '#fbfaf8',
