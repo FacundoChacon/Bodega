@@ -12,10 +12,10 @@ const TarjetaVino = ({ vino, alAgregarAlCarrito, cantidadEnCarrito }) => {
             // ANIMACION: Dispara el estado para mostrar el check y texto "Vino Añadido"
             setAñadidoRecientemente(true);
 
-            // APARECE EL CHECK Y TEXTO "VINO AÑADIDO" POR 1 SEGUNDO
+            // APARECE EL CHECK Y TEXTO "VINO AÑADIDO" POR UN TIEMPO Y LUEGO DESAPARECE
             setTimeout(() => {
                 setAñadidoRecientemente(false);
-            }, 400);
+            }, 400); // Duración total de la animación representada en ms
         }
     };
 

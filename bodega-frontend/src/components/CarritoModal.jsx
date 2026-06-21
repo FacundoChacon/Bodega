@@ -1,13 +1,25 @@
 import React from 'react';
 
 const CarritoModal = ({ mostrar, alCerrar, items, alConfirmarCompra, alSumarCantidad, alRestarCantidad, alEliminarItem }) => {
-    if (!mostrar) return null;
-
+    
     const precioTotal = items.reduce((acum, item) => acum + (item.precio * item.cantidad), 0);
 
     return (
-        <div style={styles.overlay}>
-            <div style={styles.sidebar}>
+        <div 
+            onClick={alCerrar} 
+            style={{
+                ...styles.overlay,
+                opacity: mostrar ? 1 : 0,
+                visibility: mostrar ? 'visible' : 'hidden',
+            }}
+        >
+            <div 
+                onClick={(e) => e.stopPropagation()} 
+                style={{
+                    ...styles.sidebar,
+                    transform: mostrar ? 'translateX(0)' : 'translateX(100%)', 
+                }}
+            >
                 <div style={styles.header}>
                     <h2 style={styles.titulo}>TU COLECCIÓN</h2>
                     <button onClick={alCerrar} style={styles.botonCerrar}>✕</button>
@@ -81,33 +93,41 @@ const styles = {
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.4)',
+        backgroundColor: 'rgba(0, 0, 0, 0.15)', 
         zIndex: 2000,
         display: 'flex',
-        justifyContent: 'flex-end'
+        justifyContent: 'flex-end',
+        transition: 'opacity 0.4s ease, visibility 0.4s ease',
+        cursor: 'pointer'
     },
     sidebar: {
         width: '400px',
-        backgroundColor: '#ffffff',
+        backgroundColor: 'rgba(255, 255, 255, 0.85)', 
+        backdropFilter: 'blur(15px)', 
+        WebkitBackdropFilter: 'blur(15px)',
         height: '100%',
-        boxShadow: '-4px 0 20px rgba(0,0,0,0.1)',
+        boxShadow: '-8px 0 30px rgba(0,0,0,0.15)',
         display: 'flex',
         flexDirection: 'column',
         fontFamily: '"Inter", sans-serif',
-        padding: '30px'
+        padding: '30px',
+        boxSizing: 'border-box',
+        transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+        cursor: 'default'
     },
     header: {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        borderBottom: '1px solid #f0f0f0',
+        borderBottom: '1px solid rgba(0,0,0,0.05)',
         paddingBottom: '15px'
     },
     titulo: {
         fontFamily: '"Playfair Display", serif',
         fontSize: '22px',
         margin: 0,
-        letterSpacing: '1px'
+        letterSpacing: '1px',
+        color: '#1a1a1a'
     },
     botonCerrar: {
         background: 'none',
@@ -122,7 +142,8 @@ const styles = {
         marginTop: '20px',
         display: 'flex',
         flexDirection: 'column',
-        gap: '15px'
+        gap: '15px',
+        paddingRight: '5px'
     },
     vacio: {
         color: '#777',
@@ -134,7 +155,7 @@ const styles = {
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingBottom: '15px',
-        borderBottom: '1px solid #f9f9f9'
+        borderBottom: '1px solid rgba(0,0,0,0.03)'
     },
     itemInfo: {
         display: 'flex',
@@ -150,7 +171,7 @@ const styles = {
     itemDetalle: {
         margin: 0,
         fontSize: '13px',
-        color: '#777'
+        color: '#666'
     },
     controlesContenedor: {
         display: 'flex',
@@ -159,8 +180,8 @@ const styles = {
         marginTop: '6px'
     },
     botonControl: {
-        backgroundColor: '#f5f5f5',
-        border: '1px solid #e0e0e0',
+        backgroundColor: 'rgba(0,0,0,0.04)',
+        border: '1px solid rgba(0,0,0,0.05)',
         width: '24px',
         height: '24px',
         display: 'flex',
@@ -187,18 +208,22 @@ const styles = {
         fontSize: '15px'
     },
     footer: {
-        borderTop: '1px solid #f0f0f0',
+        borderTop: '1px solid rgba(0,0,0,0.08)',
         paddingTop: '20px',
+        marginTop: 'auto', 
         display: 'flex',
         flexDirection: 'column',
-        gap: '15px'
+        gap: '15px',
+        backgroundColor: 'transparent',
+        paddingBottom: '10px' 
     },
     totalContenedor: {
         display: 'flex',
         justifyContent: 'space-between',
         fontWeight: 'bold',
         fontSize: '16px',
-        letterSpacing: '1px'
+        letterSpacing: '1px',
+        color: '#1a1a1a'
     },
     totalPrecio: {
         color: '#722f37',
@@ -208,12 +233,13 @@ const styles = {
         backgroundColor: '#722f37',
         color: '#ffffff',
         border: 'none',
-        padding: '14px',
+        padding: '16px', 
         fontWeight: '600',
-        letterSpacing: '1px',
+        letterSpacing: '2px',
         cursor: 'pointer',
-        transition: 'background-color 0.2s',
-        fontSize: '13px'
+        transition: 'background-color 0.2s, transform 0.1s',
+        fontSize: '13px',
+        boxShadow: '0 4px 12px rgba(114, 47, 55, 0.2)', 
     }
 };
 
