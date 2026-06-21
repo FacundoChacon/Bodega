@@ -95,10 +95,16 @@ const App = () => {
                 alert("¡Compra confirmada! Tu pedido ha sido registrado en la base de datos de la bodega. 🍷");
                 setCarrito([]);
                 setVerCarrito(false);
-                
-                const resVinos = await fetch('http://localhost:8080/api/vinos');
-                const nuevosVinos = await resVinos.json();
-                setVinos(nuevosVinos);
+                setPaginaActual(0);
+                setCargando(true);
+                const datosPaginados = await obtenerVinosConFiltrosYPaginas({ 
+                    page: 0,
+                    size: 2  // NUMERO DE OBJETOS QUE SE VA A MOSTREAR (si se desea otro numero se debe modificar en el backend tambien)
+                });
+                setVinos(datosPaginados.content);
+                setTotalPaginas(datosPaginados.totalPages);
+                setCargando(false);
+
             } else {
                 const mensajeError = await respuesta.text();
                 alert(`Error al procesar la compra: ${mensajeError}`);
@@ -106,6 +112,7 @@ const App = () => {
         } catch (error) {
             console.error("Error al enviar el pedido:", error);
             alert("Hubo un problema de conexión con el servidor.");
+            setCargando(false);
         }
     };
 
