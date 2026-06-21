@@ -5,6 +5,9 @@ import com.bodega.ecomerce.enums.CampoOrdenamientoProducto;
 import com.bodega.ecomerce.repositories.VinoRepository;
 import com.bodega.ecomerce.specificaciones.VinoSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -20,13 +23,15 @@ public class VinoService {
     private VinoRepository vinoRepository;
 
     // FILTROS Y ORDENAMIENTOS
-    public List<Vino> obtenerVinosConFiltros(
+    public Page<Vino> obtenerVinosConFiltros(
             String bodega,
             BigDecimal precioMin,
             BigDecimal precioMax,
             Integer categoriaId,
             CampoOrdenamientoProducto criterioOrden,
-            String direccionOrden
+            String direccionOrden,
+            int numeroPagina,
+            int tamanioPagina
     ) {
         Specification<Vino> spec = Specification.where((root, query, criteriaBuilder) -> criteriaBuilder.conjunction());
 
@@ -36,18 +41,14 @@ public class VinoService {
         if (categoriaId != null) spec = spec.and(VinoSpecification.porCategoria(categoriaId));
 
         Sort sort = Sort.unsorted();
-
         if (criterioOrden != null) {
             String campoReal = criterioOrden.getCampoEntidad();
-
-            if ("DESC".equalsIgnoreCase(direccionOrden)) {
-                sort = Sort.by(campoReal).descending();
-            } else {
-                sort = Sort.by(campoReal).ascending();
-            }
+            sort = "DESC".equalsIgnoreCase(direccionOrden) ? Sort.by(campoReal).descending() : Sort.by(campoReal).ascending();
         }
 
-        return vinoRepository.findAll(spec, sort);
+        Pageable pageable = PageRequest.of(numeroPagina, tamanioPagina, sort);
+
+        return vinoRepository.findAll(spec, pageable);
     }
 
 

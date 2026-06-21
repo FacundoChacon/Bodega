@@ -5,6 +5,7 @@ import com.bodega.ecomerce.enums.CampoOrdenamientoProducto;
 import com.bodega.ecomerce.exceptions.RecursoNoEncontradoException;
 import com.bodega.ecomerce.services.VinoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,20 +21,22 @@ public class VinoController {
     private VinoService vinoService;
 
     @GetMapping
-    public ResponseEntity<List<Vino>> listarVinos(
+    public ResponseEntity<Page<Vino>> listarVinos(
             @RequestParam(required = false) String bodega,
             @RequestParam(required = false) BigDecimal precioMin,
             @RequestParam(required = false) BigDecimal precioMax,
             @RequestParam(required = false) Integer categoriaId,
             @RequestParam(defaultValue = "NOMBRE") CampoOrdenamientoProducto ordenarPor,
-            @RequestParam(defaultValue = "ASC") String ordenDireccion
+            @RequestParam(defaultValue = "ASC") String ordenDireccion,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "6") int size
     ) {
 
-        List<Vino> vinosFiltradosYOrdenados = vinoService.obtenerVinosConFiltros(
-                bodega, precioMin, precioMax, categoriaId, ordenarPor, ordenDireccion
+        Page<Vino> paginaVinos = vinoService.obtenerVinosConFiltros(
+                bodega, precioMin, precioMax, categoriaId, ordenarPor, ordenDireccion, page, size
         );
 
-        return ResponseEntity.ok(vinosFiltradosYOrdenados);
+        return ResponseEntity.ok(paginaVinos);
     }
 
     @PostMapping
