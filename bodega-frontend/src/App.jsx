@@ -261,12 +261,11 @@ const App = () => {
                                 vinos.map((vino) => {
                                     const itemEnCarrito = carrito.find(item => item.id === vino.id);
                                     const cantidadEnCarrito = itemEnCarrito ? itemEnCarrito.cantidad : 0;
-                                    const vinoConStockDinamico = { ...vino, stock: vino.stock - cantidadEnCarrito };
                                 
                                     return (
                                         <div key={vino.id} style={{ minWidth: '300px', maxWidth: '340px', flex: '0 0 auto' }}>
                                             <TarjetaVino 
-                                                vino={vinoConStockDinamico} 
+                                                vino={vino}
                                                 alAgregarAlCarrito={agregarAlCarrito} 
                                                 cantidadEnCarrito={cantidadEnCarrito}
                                             />

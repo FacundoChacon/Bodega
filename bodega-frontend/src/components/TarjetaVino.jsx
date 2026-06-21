@@ -2,6 +2,7 @@ import React from 'react';
 
 const TarjetaVino = ({ vino, alAgregarAlCarrito, cantidadEnCarrito }) => {
     const limiteAlcanzado = cantidadEnCarrito >= vino.stock;
+    const stockVisualRestante = vino.stock - cantidadEnCarrito;
 
     return (
         <div style={styles.card}>
@@ -14,16 +15,16 @@ const TarjetaVino = ({ vino, alAgregarAlCarrito, cantidadEnCarrito }) => {
                     <span style={{ 
                         fontSize: '12px', 
                         fontWeight: 'bold',
-                        color: vino.stock > 0 ? '#2e7d32' : '#c62828' 
+                        color: stockVisualRestante > 0 ? '#2e7d32' : '#c62828' 
                     }}>
-                        {vino.stock > 0 ? `${vino.stock} DISP.` : 'SIN STOCK'}
+                        {stockVisualRestante > 0 ? `${stockVisualRestante} DISP.` : 'SIN STOCK'}
                     </span>
                 </div>
                 
                 <button 
                     style={{
                         ...styles.botonAgregar,
-                        backgroundColor: limiteAlcanzado ? '#888888' : '#1a1a1a', // Se pone gris si se bloquea
+                        backgroundColor: limiteAlcanzado ? '#888888' : '#1a1a1a',
                         cursor: limiteAlcanzado ? 'not-allowed' : 'pointer'
                     }} 
                     disabled={vino.stock === 0 || limiteAlcanzado}
