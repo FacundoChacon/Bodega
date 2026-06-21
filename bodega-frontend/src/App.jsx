@@ -3,19 +3,22 @@ import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import TarjetaVino from './components/TarjetaVino';
 import CarritoModal from './components/CarritoModal';
+import { obtenerVinosConFiltrosYPaginas } from './services/VinoService';
 
 const App = () => {
     const [vinos, setVinos] = useState([]);
     const [cargando, setCargando] = useState(true);
     const [carrito, setCarrito] = useState([]);
     const [verCarrito, setVerCarrito] = useState(false);
+    const [paginaActual, setPaginaActual] = useState(0);
 
     useEffect(() => {
         const traerVinosDesdeBackend = async () => {
             try {
-                const respuesta = await fetch('http://localhost:8080/api/vinos');
-                const datos = await respuesta.json();
-                setVinos(datos);
+                setCargando(true);
+                const datosPaginados = await obtenerVinosConFiltrosYPaginas({ page: paginaActual, size: 2 });
+                setVinos(datosPaginados.content);
+                setTotalPaginas(datosPaginados.totalPages);
                 setCargando(false);
             } catch (error) {
                 console.error("Error conectando a la API de la bodega:", error);
@@ -23,7 +26,7 @@ const App = () => {
             }
         };
         traerVinosDesdeBackend();
-    }, []);
+    }, [paginaActual]);
 
     const agregarAlCarrito = (vino) => {
         const vinoReal = vinos.find(v => v.id === vino.id);
@@ -38,7 +41,6 @@ const App = () => {
                     return carritoActual;
                 }
                 
-                // Retornamos un nuevo array clonado con la cantidad actualizada
                 return carritoActual.map(item => 
                     item.id === vino.id ? { ...item, cantidad: item.cantidad + 1 } : item
                 );
