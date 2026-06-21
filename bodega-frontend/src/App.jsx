@@ -4,6 +4,7 @@ import Hero from './components/Hero';
 import TarjetaVino from './components/TarjetaVino';
 import CarritoModal from './components/CarritoModal';
 import { obtenerVinosConFiltrosYPaginas } from './services/VinoService';
+import Filtros from './components/Filtros';
 
 const App = () => {
     const [vinos, setVinos] = useState([]);
@@ -15,6 +16,14 @@ const App = () => {
     const [desplazamiento, setDesplazamiento] = useState('0px');
     const [opacidad, setOpacidad] = useState(1);
     const [conTransicion, setConTransicion] = useState(true);
+    const [filtros, setFiltros] = useState({
+        bodega: '',
+        precioMin: '',
+        precioMax: '',
+        categoriaId: '',
+        ordenarPor: 'NOMBRE',
+        ordenDireccion: 'ASC'
+    });
 
     const cavaRef = useRef(null);
 
@@ -22,10 +31,18 @@ const App = () => {
         const traerVinosDesdeBackend = async () => {
             try {
                 setCargando(true);
+
                 const datosPaginados = await obtenerVinosConFiltrosYPaginas({ 
                     page: paginaActual, 
-                    size: 3 
+                    size: 3,
+                    bodega: filtros.bodega,
+                    precioMin: filtros.precioMin || null,
+                    precioMax: filtros.precioMax || null,
+                    categoriaId: filtros.categoriaId || null,
+                    ordenarPor: filtros.ordenarPor,
+                    ordenDirection: filtros.ordenDireccion
                 });
+                
                 setVinos(datosPaginados.content); 
                 setTotalPaginas(datosPaginados.totalPages);
                 setCargando(false);
@@ -35,18 +52,23 @@ const App = () => {
             }
         };
         traerVinosDesdeBackend();
-    }, [paginaActual, carrito.length]);
+    }, [paginaActual, filtros, carrito.length]);
 
+    // ANIMACION DE TRANSICION ENTRE PAGINAS
     useEffect(() => {
         if (!cargando && vinos.length > 0) {
             const timer = setTimeout(() => {
                 setConTransicion(true);
                 setDesplazamiento('0px'); 
                 setOpacidad(1); 
+                
+                if (paginaActual >= totalPaginas && totalPaginas > 0) {
+                    setPaginaActual(totalPaginas - 1);
+                }
             }, 50); 
             return () => clearTimeout(timer);
         }
-    }, [cargando, vinos]);
+    }, [cargando, vinos, paginaActual, totalPaginas]);
 
     const manejarCambioPagina = (nuevaPagina, direccion) => {
         setConTransicion(true);
@@ -124,6 +146,54 @@ const App = () => {
         }
     };
 
+    //  FILTROS DINAMICOS
+    useEffect(() => {
+        const traerVinosDesdeBackend = async () => {
+            try {
+                setCargando(true);
+
+                const datosPaginados = await obtenerVinosConFiltrosYPaginas({ 
+                    page: paginaActual, 
+                    size: 3,
+                    bodega: filtros.bodega,
+                    precioMin: filtros.precioMin || null,
+                    precioMax: filtros.precioMax || null,
+                    categoriaId: filtros.categoriaId || null,
+                    ordenarPor: filtros.ordenarPor,
+                    ordenDirection: filtros.ordenDireccion
+                });
+                
+                setVinos(datosPaginados.content); 
+                setTotalPaginas(datosPaginados.totalPages);
+                setCargando(false);
+            } catch (error) {
+                console.error("Error conectando a la API de la bodega:", error);
+                setCargando(false);
+            }
+        };
+        traerVinosDesdeBackend();
+    }, [paginaActual, filtros]);
+
+    const manejarCambioFiltro = (nombreFiltro, valor) => {
+        setFiltros(prev => ({
+            ...prev,
+            [nombreFiltro]: valor
+        }));
+        setPaginaActual(0);
+    };
+
+    const manejarLimpiarFiltros = () => {
+        setFiltros({
+            bodega: '',
+            precioMin: '',
+            precioMax: '',
+            categoriaId: '',
+            ordenarPor: 'NOMBRE',
+            ordenDireccion: 'ASC'
+        });
+        setPaginaActual(0);
+    };
+
     const totalBotellas = carrito.reduce((acum, item) => acum + item.cantidad, 0);
 
     const scrollSuaveACava = () => {
@@ -160,6 +230,11 @@ const App = () => {
                 <p style={{ fontFamily: '"Inter", sans-serif', textAlign: 'center', color: '#666', marginBottom: '40px' }}>
                     Cada botella representa la máxima expresión de nuestro terruño.
                 </p>
+                <Filtros 
+                    filtros={filtros}
+                    alCambiarFiltro={manejarCambioFiltro}
+                    alLimpiarFiltros={manejarLimpiarFiltros}
+                />
 
                 <div style={{ display: 'flex', alignItems: 'center', position: 'relative', width: '100%', gap: '10px' }}>
                     <button 
