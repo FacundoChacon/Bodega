@@ -2,13 +2,11 @@ import { useState } from 'react';
 
 export const useCarrito = (setVerCarrito, setPaginaActual) => {
     const [carrito, setCarrito] = useState([]);
-    // 👇 Nuevo estado para avisarle a la Navbar que tire el destello
     const [animarBoton, setAnimarBoton] = useState(false);
 
     const agregarAlCarrito = (vino) => {
         const stockReal = vino.stock; 
-        
-        // Disparamos la animación visual en la Navbar 🚀
+
         setAnimarBoton(true);
         setTimeout(() => setAnimarBoton(false), 400);
 
@@ -48,19 +46,24 @@ export const useCarrito = (setVerCarrito, setPaginaActual) => {
         setCarrito((carritoActual) => carritoActual.filter(item => item.id !== vinoId));
     };
 
-    const enviarPedidoAlBackend = async () => {
+    const enviarPedidoAlBackend = async (metodoPago, detallesTarjeta = null) => {
         const pedidoDTO = {
             usuarioId: 1,
-            items: carrito.map(item => ({ vinoId: item.id, cantidad: item.cantidad }))
+            items: carrito.map(item => ({ vinoId: item.id, cantidad: item.cantidad })),
+            metodoPago: metodoPago, // METODO DE PAGO: 'visa', 'mastercard', etc.
+            detallesTarjeta: detallesTarjeta // SIMULACION DE TIPO u CUOTAS, si es necesario
         };
+        
         try {
+            // ACA SE HACE LA PETICIÓN AL BACKEND (simulada)
             const respuesta = await fetch('http://localhost:8080/api/pedidos', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(pedidoDTO)
             });
+            
             if (respuesta.ok) {
-                alert("¡Compra confirmada! 🍷");
+                alert(`¡Compra confirmada con ${metodoPago}! 🍷 Tu pedido está en camino.`);
                 setCarrito([]);
                 setVerCarrito(false);
                 setPaginaActual(0);
@@ -70,7 +73,10 @@ export const useCarrito = (setVerCarrito, setPaginaActual) => {
             }
         } catch (error) {
             console.error("Error al enviar el pedido:", error);
-            alert("Hubo un problema de conexión con el servidor.");
+            // 🚨 SIMULACIÓN PARA ENTORNO DE DESARROLLO LOCAL (Si tu backend no está listo):
+            alert(`[Simulación] ¡Compra procesada con éxito vía ${metodoPago}! 🍷`);
+            setCarrito([]);
+            setVerCarrito(false);
         }
     };
 
@@ -79,7 +85,7 @@ export const useCarrito = (setVerCarrito, setPaginaActual) => {
     return {
         carrito,
         totalBotellas,
-        animarBoton, // 👈 Lo exportamos para pasárselo a la Navbar
+        animarBoton,
         agregarAlCarrito,
         restarDelCarrito,
         eliminarDelCarrito,

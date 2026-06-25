@@ -2,24 +2,30 @@ import React, { useState, useEffect } from 'react';
 import ItemCarritoAnimado from './ItemCarritoAnimado';
 
 const CarritoModal = ({ mostrar, alCerrar, items, alConfirmarCompra, alSumarCantidad, alRestarCantidad, alEliminarItem }) => {
-    // 1. Estado local para controlar el destello de inversión de color en todo el módulo
     const [hacerDestello, setHacerDestello] = useState(false);
+    
+    // METODO DE PAGO SELECCIONADO (VISA, MASTERCARD, etc.)
+    const [metodoPago, setMetodoPago] = useState('VISA_CREDITO');
 
     const precioTotal = items.reduce((acum, item) => acum + (item.precio * item.cantidad), 0);
     const totalBotellas = items.reduce((acum, item) => acum + item.cantidad, 0);
 
-    // 2. EFECTO CLAVE: Cada vez que el número total de botellas aumente, se dispara la inversión de color
     useEffect(() => {
         if (totalBotellas > 0 && mostrar) {
             setHacerDestello(true);
-            const timer = setTimeout(() => setHacerDestello(false), 450); // Duración del destello
+            const timer = setTimeout(() => setHacerDestello(false), 450);
             return () => clearTimeout(timer);
         }
     }, [totalBotellas, mostrar]);
 
-    // 3. Paleta de colores para la inversión
     const colorVino = '#722f37';
     const colorBlanco = '#ffffff';
+
+    // DRIVER function para manejar la confirmación de compra
+    const manejarConfirmacion = () => {
+        // RECIBE EL METODO DE PAGO SELECCIONADO Y LO ENVIA AL BACKEND
+        alConfirmarCompra(metodoPago);
+    };
 
     return (
         <div 
@@ -35,12 +41,10 @@ const CarritoModal = ({ mostrar, alCerrar, items, alConfirmarCompra, alSumarCant
                 style={{
                     ...styles.sidebar,
                     transform: mostrar ? 'translateX(0)' : 'translateX(100%)',
-                    // 👇 AQUÍ SE APLICA LA INVERSIÓN TOTAL DE COLORES EN LA CAJA DEL MÓDULO
-                    backgroundColor: hacerDestello ? colorVino : 'rgba(255, 255, 255, 0.85)',
+                    backgroundColor: hacerDestello ? colorVino : 'rgba(255, 255, 255, 0.95)',
                     color: hacerDestello ? colorBlanco : '#1a1a1a',
                 }}
             >
-                {/* Modificamos los textos internos para que hereden el color blanco durante el destello */}
                 <div style={{...styles.header, borderColor: hacerDestello ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.05)'}}>
                     <h2 style={{ ...styles.titulo, color: hacerDestello ? colorBlanco : '#1a1a1a' }}>
                         TU COLECCIÓN
@@ -66,8 +70,6 @@ const CarritoModal = ({ mostrar, alCerrar, items, alConfirmarCompra, alSumarCant
                                 alSumarCantidad={alSumarCantidad}
                                 alRestarCantidad={alRestarCantidad}
                                 alEliminarItem={alEliminarItem}
-                                // Pasamos el estado por si las letras de los ítems necesitan cambiar a blanco
-                                modoInvertido={hacerDestello} 
                             />
                         ))
                     )}
@@ -75,17 +77,35 @@ const CarritoModal = ({ mostrar, alCerrar, items, alConfirmarCompra, alSumarCant
 
                 {items.length > 0 && (
                     <div style={{...styles.footer, borderTopColor: hacerDestello ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.08)'}}>
+                        
+                        {/* 💳 SECTOR DE SELECCIÓN DE TARJETAS */}
+                        <div style={styles.seccionPago}>
+                            <label style={{...styles.labelPago, color: hacerDestello ? colorBlanco : '#555'}}>
+                                MÉTODO DE PAGO:
+                            </label>
+                            <select 
+                                value={metodoPago} 
+                                onChange={(e) => setMetodoPago(e.target.value)}
+                                style={styles.selectPago}
+                            >
+                                <option value="VISA_CREDITO">💳 VISA Crédito</option>
+                                <option value="VISA_DEBITO">💳 VISA Débito</option>
+                                <option value="MASTERCARD_CREDITO">💳 MasterCard Crédito</option>
+                                <option value="MASTERCARD_DEBITO">💳 MasterCard Débito</option>
+                            </select>
+                        </div>
+
                         <div style={{...styles.totalContenedor, color: hacerDestello ? colorBlanco : '#1a1a1a'}}>
                             <span>TOTAL:</span>
                             <span style={{...styles.totalPrecio, color: hacerDestello ? colorBlanco : '#722f37'}}>
                                 ${precioTotal.toLocaleString('es-AR')}
                             </span>
                         </div>
+                        
                         <button 
-                            onClick={alConfirmarCompra} 
+                            onClick={manejarConfirmacion} 
                             style={{
                                 ...styles.botonConfirmar,
-                                // Inversión en el botón de confirmación para que no se pierda de vista
                                 backgroundColor: hacerDestello ? colorBlanco : colorVino,
                                 color: hacerDestello ? colorVino : colorBlanco,
                             }}
@@ -107,7 +127,10 @@ const styles = {
     botonCerrar: { background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer', transition: 'color 0.25s ease' },
     listaContenedor: { flex: 1, overflowY: 'auto', marginTop: '20px', display: 'flex', flexDirection: 'column', gap: '15px', paddingRight: '5px' },
     vacio: { textAlign: 'center', marginTop: '40px', transition: 'color 0.25s ease' },
-    footer: { borderTop: '1px solid', paddingTop: '20px', marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '15px', backgroundColor: 'transparent', paddingBottom: '10px', transition: 'border-color 0.25s ease' },
+    footer: { borderTop: '1px solid', paddingTop: '15px', marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '12px', backgroundColor: 'transparent', paddingBottom: '10px', transition: 'border-color 0.25s ease' },
+    seccionPago: { display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '5px' },
+    labelPago: { fontSize: '11px', fontWeight: '600', letterSpacing: '1px', transition: 'color 0.25s ease' },
+    selectPago: { padding: '10px', fontFamily: '"Inter", sans-serif', fontSize: '13px', border: '1px solid rgba(0,0,0,0.15)', borderRadius: '4px', backgroundColor: '#fff', color: '#333', outline: 'none' },
     totalContenedor: { display: 'flex', justifyContent: 'space-between', fontWeight: 'bold', fontSize: '16px', letterSpacing: '1px', transition: 'color 0.25s ease' },
     totalPrecio: { fontSize: '18px', transition: 'color 0.25s ease' },
     botonConfirmar: { border: 'none', padding: '16px', fontWeight: '600', letterSpacing: '2px', cursor: 'pointer', fontSize: '13px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)', transition: 'background-color 0.25s ease, color 0.25s ease' }

@@ -45,6 +45,7 @@ public class PedidoService {
         Pedido pedido = new Pedido();
         pedido.setUsuario(usuario);
         pedido.setFecha(LocalDateTime.now());
+        pedido.setMetodoPago(carrito.getMetodoPago());
         pedido.setTotal(BigDecimal.ZERO);
         pedido.setDetalles(new ArrayList<>());
 
