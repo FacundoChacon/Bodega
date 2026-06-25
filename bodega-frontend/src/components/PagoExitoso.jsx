@@ -8,19 +8,14 @@ export default function PagoExitoso() {
   useEffect(() => {
     console.log("--- DETECTIVE DE STOCK INICIADO ---");
 
-    // LEE LA QUERY STRING DE LA URL PARA OBTENER EL ESTADO DEL PAGO
     const queryParams = new URLSearchParams(window.location.search);
     const status = queryParams.get("status");
 
-    console.log("Estado capturado de Mercado Pago (status):", status);
-
     if (status === "approved") {
       const carritoGuardado = localStorage.getItem("carrito");
-      console.log("Contenido del localStorage ['carrito']:", carritoGuardado);
 
       if (carritoGuardado) {
         const itemsCarrito = JSON.parse(carritoGuardado);
-        console.log("Items recuperados:", itemsCarrito);
 
         if (itemsCarrito.length === 0) {
           setError("El carrito llegó vacío.");
@@ -28,18 +23,21 @@ export default function PagoExitoso() {
           return;
         }
 
-        // ARMA LAS PETICIONES PARA DESCONTAR EL STOCK DE CADA VINO
         const peticionesDescuento = itemsCarrito.map((item) => {
           const url = `http://localhost:8080/api/vinos/${item.id}/descontar-stock?cantidad=${item.cantidad}`;
-          console.log(`Preparando petición hacia: ${url}`);
           return axios.put(url);
         });
 
         Promise.all(peticionesDescuento)
           .then((respuestas) => {
-            console.log("✅ ¡ÉXITO! Stock descontado en Spring Boot:", respuestas);
-            localStorage.removeItem("carrito"); // Limpiamos el carrito del navegador
+            console.log("✅ ¡ÉXITO! Stock descontado en Spring Boot.");
+            localStorage.removeItem("carrito"); // Limpiamos el carrito
             setProcesando(false);
+
+            // REDIRECCIÓN AUTOMÁTICA EN 3 SEGUNDOS (3000 milisegundos)
+            setTimeout(() => {
+              window.location.href = "/"; // MANDA A LA CAVA PRINCIPAL
+            }, 3000); // TIEMPO DE ESPERA ANTES DE REDIRECCIONAR
           })
           .catch((err) => {
             console.error("❌ ERROR EN SPRING BOOT:", err.response?.data || err.message);
@@ -47,7 +45,6 @@ export default function PagoExitoso() {
             setProcesando(false);
           });
       } else {
-        console.error("❌ No se encontró 'carrito' en localStorage.");
         setError("No pudimos encontrar los productos de tu compra.");
         setProcesando(false);
       }
@@ -77,23 +74,14 @@ export default function PagoExitoso() {
   }
 
   return (
-    <div style={{ textAlign: "center", marginTop: "100px", color: "green", fontFamily: "sans-serif" }}>
-      <h1>¡Muchas gracias por tu compra! 🎉</h1>
-      <p>Tu pago fue procesado y el stock de la cava se actualizó correctamente.</p>
-      <a 
-        href="/" 
-        style={{
-          display: "inline-block",
-          marginTop: "20px",
-          padding: "10px 20px",
-          backgroundColor: "#722F37",
-          color: "white",
-          textDecoration: "none",
-          borderRadius: "5px"
-        }}
-      >
-        Volver a la Cava
-      </a>
+    <div style={{ textAlign: "center", marginTop: "100px", fontFamily: "sans-serif" }}>
+      <h1 style={{ color: "green" }}>¡Muchas gracias por tu compra! 🎉</h1>
+      <p style={{ fontSize: "18px" }}>Tu pago fue procesado y la cava se actualizó correctamente.</p>
+      
+      {/* Mensaje estético avisando que se va solo */}
+      <p style={{ color: "gray", fontStyle: "italic", marginTop: "20px" }}>
+        Redirigiéndote a la Cava principal en 3 segundos... 🕒
+      </p>
     </div>
   );
 }

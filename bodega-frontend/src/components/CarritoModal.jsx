@@ -41,12 +41,12 @@ const CarritoModal = ({ mostrar, alCerrar, items, alConfirmarCompra, alSumarCant
                 style={{
                     ...styles.sidebar,
                     transform: mostrar ? 'translateX(0)' : 'translateX(100%)',
-                    backgroundColor: hacerDestello ? colorVino : 'rgba(255, 255, 255, 0.95)',
-                    color: hacerDestello ? colorBlanco : '#1a1a1a',
+                    backgroundColor:'rgba(255, 255, 255, 0.95)',
+                    color:'#1a1a1a',
                 }}
             >
                 <div style={{...styles.header, borderColor: hacerDestello ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.05)'}}>
-                    <h2 style={{ ...styles.titulo, color: hacerDestello ? colorBlanco : '#1a1a1a' }}>
+                    <h2 style={{ ...styles.titulo, color:'#1a1a1a' }}>
                         TU COLECCIÓN
                     </h2>
                     <button 
@@ -80,7 +80,7 @@ const CarritoModal = ({ mostrar, alCerrar, items, alConfirmarCompra, alSumarCant
                         
                         {/* 💳 SECTOR DE SELECCIÓN DE TARJETAS */}
                         <div style={styles.seccionPago}>
-                            <label style={{...styles.labelPago, color: hacerDestello ? colorBlanco : '#555'}}>
+                            <label style={{...styles.labelPago, color:'#555'}}>
                                 MÉTODO DE PAGO:
                             </label>
                             <select 
@@ -95,9 +95,9 @@ const CarritoModal = ({ mostrar, alCerrar, items, alConfirmarCompra, alSumarCant
                             </select>
                         </div>
 
-                        <div style={{...styles.totalContenedor, color: hacerDestello ? colorBlanco : '#1a1a1a'}}>
+                        <div style={{...styles.totalContenedor, color: hacerDestello ? '#df4f5b' : '#1a1a1a'}}>
                             <span>TOTAL:</span>
-                            <span style={{...styles.totalPrecio, color: hacerDestello ? colorBlanco : '#722f37'}}>
+                            <span style={{...styles.totalPrecio, color: hacerDestello ? '#df4f5b' : '#722f37'}}>
                                 ${precioTotal.toLocaleString('es-AR')}
                             </span>
                         </div>
@@ -106,8 +106,8 @@ const CarritoModal = ({ mostrar, alCerrar, items, alConfirmarCompra, alSumarCant
                             onClick={manejarConfirmacion} 
                             style={{
                                 ...styles.botonConfirmar,
-                                backgroundColor: hacerDestello ? colorBlanco : colorVino,
-                                color: hacerDestello ? colorVino : colorBlanco,
+                                backgroundColor: hacerDestello ? '#df4f5b' : colorVino,
+                                color: hacerDestello ? '#1a1a1a' : colorBlanco,
                             }}
                         >
                             CONFIRMAR COMPRA 🍷
