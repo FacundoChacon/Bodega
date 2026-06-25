@@ -14,7 +14,6 @@ public class CarritoDTO {
     @NotNull(message = "El ID del usuario es obligatorio para procesar la compra.")
     private Integer usuarioId;
 
-    @NotNull(message = "El método de pago es obligatorio para finalizar la compra.")
     private MetodoPago metodoPago;
 
     @NotEmpty(message = "El carrito de compras no puede estar vacío.")

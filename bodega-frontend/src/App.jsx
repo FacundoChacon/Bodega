@@ -4,6 +4,7 @@ import Hero from './components/Hero';
 import CavaSeccion from './components/CavaSeccion';
 import CarritoModal from './components/CarritoModal';
 import { useCarrito } from './hooks/useCarrito';
+import PagoExitoso from "./components/PagoExitoso"; // 👈 Tu componente de stock
 
 const App = () => {
     const [verCarrito, setVerCarrito] = useState(false);
@@ -16,7 +17,7 @@ const App = () => {
         agregarAlCarrito,
         restarDelCarrito,
         eliminarDelCarrito,
-        enviarPedidoAlBackend
+        iniciarPagoReal
     } = useCarrito(setVerCarrito, setPaginaActual);
 
     const scrollSuaveACava = () => {
@@ -29,6 +30,12 @@ const App = () => {
         }
     };
 
+    // SI LA URL ES /pago-exitoso, MOSTRAMOS EL COMPONENTE DE STOCK
+    if (window.location.pathname === "/pago-exitoso") {
+        return <PagoExitoso />;
+    }
+
+    // Si no está en esa URL, la aplicación sigue mostrando el catálogo normal:
     return (
         <div style={{ backgroundColor: '#fdfdfb', minHeight: '100vh' }}>
             <Navbar 
@@ -55,7 +62,7 @@ const App = () => {
                 mostrar={verCarrito} 
                 alCerrar={() => setVerCarrito(false)} 
                 items={carrito} 
-                alConfirmarCompra={enviarPedidoAlBackend}
+                alConfirmarCompra={iniciarPagoReal}
                 alRestarCantidad={restarDelCarrito}
                 alEliminarItem={eliminarDelCarrito}
                 alSumarCantidad={agregarAlCarrito}

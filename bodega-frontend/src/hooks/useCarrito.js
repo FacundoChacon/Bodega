@@ -73,10 +73,37 @@ export const useCarrito = (setVerCarrito, setPaginaActual) => {
             }
         } catch (error) {
             console.error("Error al enviar el pedido:", error);
-            // 🚨 SIMULACIÓN PARA ENTORNO DE DESARROLLO LOCAL (Si tu backend no está listo):
+            // SIMULACIÓN PARA ENTORNO DE DESARROLLO LOCAL (Si el backend no esta listo):
             alert(`[Simulación] ¡Compra procesada con éxito vía ${metodoPago}! 🍷`);
             setCarrito([]);
             setVerCarrito(false);
+        }
+    };
+
+    // FUNCION PARA INICIAR EL PAGO CON MERCADO PAGO
+    const iniciarPagoReal = async () => {
+        try {
+            const respuesta = await fetch('http://localhost:8080/api/pedidos/checkout-real', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    usuarioId: 1,
+                    items: carrito.map(item => ({ vinoId: item.id, cantidad: item.cantidad }))
+                })
+            });
+
+            if (respuesta.ok) {
+                const data = await respuesta.json();
+
+                // GUARDAMOS EL CARRITO ACÁ ANTES DE IRNOS A MERCADO PAGO
+                localStorage.setItem("carrito", JSON.stringify(carrito));
+
+                window.location.href = data.initPoint; // REDIRECCIONA AL LINK DE PAGO DE MERCADO PAGO
+            } else {
+                alert("Error al generar el link de pago");
+            }
+        } catch (error) {
+            console.error("Error:", error);
         }
     };
 
@@ -89,6 +116,7 @@ export const useCarrito = (setVerCarrito, setPaginaActual) => {
         agregarAlCarrito,
         restarDelCarrito,
         eliminarDelCarrito,
-        enviarPedidoAlBackend
+        enviarPedidoAlBackend,
+        iniciarPagoReal
     };
 };

@@ -2,6 +2,7 @@ package com.bodega.ecomerce.services;
 
 import com.bodega.ecomerce.entities.Vino;
 import com.bodega.ecomerce.enums.CampoOrdenamientoProducto;
+import com.bodega.ecomerce.exceptions.RecursoNoEncontradoException;
 import com.bodega.ecomerce.repositories.VinoRepository;
 import com.bodega.ecomerce.specificaciones.VinoSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,5 +76,18 @@ public class VinoService {
     //  ELIMINA POR ID
     public void eliminar(Integer id) {
         vinoRepository.deleteById(id);
+    }
+
+    // DESCONTAR STOCK
+    public Vino descontarStock(Integer id, int cantidad) {
+        Vino vino = vinoRepository.findById(id)
+                .orElseThrow(() -> new RecursoNoEncontradoException("El vino con ID: " + id + " no existe en la cava."));
+
+        if (vino.getStock() < cantidad) {
+            throw new IllegalArgumentException("No hay suficiente stock disponible para el vino: " + vino.getNombre());
+        }
+
+        vino.setStock(vino.getStock() - cantidad);
+        return vinoRepository.save(vino);
     }
 }

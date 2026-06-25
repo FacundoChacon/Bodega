@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/vinos")
@@ -69,4 +68,18 @@ public class VinoController {
         vinoService.eliminar(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/{id}/descontar-stock")
+    public ResponseEntity<?> descontarStock(@PathVariable Integer id, @RequestParam int cantidad) {
+        try {
+            Vino vinoActualizado = vinoService.descontarStock(id, cantidad);
+            return ResponseEntity.ok(java.util.Map.of(
+                    "mensaje", "Stock actualizado con éxito",
+                    "nuevoStock", vinoActualizado.getStock()
+            ));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }
