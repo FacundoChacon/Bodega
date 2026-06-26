@@ -1,0 +1,122 @@
+.tarjeta-vino {
+    background-color: var(--blanco);
+    border-radius: var(--radio-grande);
+    overflow: hidden;
+    width: 300px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.4s var(--ease-suave), box-shadow 0.4s var(--ease-suave);
+    box-shadow: 0 12px 30px -14px rgba(15, 10, 12, 0.12);
+    border: 1px solid rgba(15, 10, 12, 0.04);
+}
+
+.tarjeta-vino:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 26px 46px -18px rgba(15, 10, 12, 0.22);
+}
+
+.tarjeta-vino-imagen {
+    height: 220px;
+    background: linear-gradient(180deg, var(--crema) 0%, #ece3d3 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tarjeta-vino-svg {
+    height: 78%;
+    width: auto;
+    filter: drop-shadow(0 10px 16px rgba(15, 10, 12, 0.18));
+    transition: transform 0.5s var(--ease-suave);
+}
+
+.tarjeta-vino:hover .tarjeta-vino-svg {
+    transform: scale(1.06) translateY(-2px);
+}
+
+.tarjeta-vino-info {
+    padding: 26px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+}
+
+.tarjeta-vino-bodega {
+    font-size: 10.5px;
+    letter-spacing: 2px;
+    color: var(--terracota);
+    font-weight: 600;
+}
+
+.tarjeta-vino-nombre {
+    font-family: var(--fuente-display);
+    font-size: 21px;
+    font-weight: 500;
+    line-height: 1.25;
+    color: var(--texto-oscuro);
+    min-height: calc(21px * 1.25 * 2);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.tarjeta-vino-detalle {
+    font-size: 13px;
+    color: var(--texto-suave);
+    margin-bottom: 8px;
+}
+
+.tarjeta-vino-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(15, 10, 12, 0.06);
+    padding-top: 14px;
+    margin-top: auto;
+}
+
+.tarjeta-vino-precio {
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--vino);
+}
+
+.tarjeta-vino-stock {
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.tarjeta-vino-stock-ok { color: #2e7d4f; }
+.tarjeta-vino-stock-agotado { color: var(--terracota); }
+
+.tarjeta-vino-boton {
+    margin-top: 14px;
+    background-color: var(--negro-vino);
+    color: var(--crema-suave);
+    border: none;
+    padding: 14px;
+    letter-spacing: 1.2px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    border-radius: var(--radio-chico);
+    transition: background-color 0.25s ease, transform 0.2s ease;
+}
+
+.tarjeta-vino-boton:not(:disabled):hover {
+    background-color: var(--vino);
+    transform: translateY(-1px);
+}
+
+.tarjeta-vino-boton:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.tarjeta-vino-boton-limite {
+    background-color: #8a8580;
+}

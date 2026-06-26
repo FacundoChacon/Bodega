@@ -1,0 +1,74 @@
+.pago-pantalla {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px;
+    font-family: var(--fuente-cuerpo);
+    background-color: var(--crema-suave);
+}
+
+.pago-icono {
+    font-size: 44px;
+    margin-bottom: 20px;
+}
+
+.pago-icono-girando {
+    font-size: 44px;
+    margin-bottom: 20px;
+    animation: girarSuave 1.6s ease-in-out infinite;
+}
+
+@keyframes girarSuave {
+    0%, 100% { transform: rotate(-8deg); }
+    50% { transform: rotate(8deg); }
+}
+
+.pago-pantalla h1,
+.pago-pantalla h2 {
+    font-family: var(--fuente-display);
+    font-weight: 500;
+    margin-bottom: 14px;
+    color: var(--texto-oscuro);
+}
+
+.pago-pantalla h1 { font-size: 32px; }
+.pago-pantalla h2 { font-size: 24px; }
+
+.pago-pantalla p {
+    font-size: 15px;
+    color: var(--texto-suave);
+    max-width: 440px;
+    line-height: 1.6;
+}
+
+.pago-exito .pago-icono {
+    color: #2e7d4f;
+    background-color: rgba(46, 125, 79, 0.1);
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pago-texto-secundario {
+    margin-top: 16px;
+    font-style: italic;
+    color: #9c948b;
+    font-size: 13.5px;
+}
+
+.pago-error .pago-icono {
+    color: var(--terracota);
+}
+
+.pago-enlace {
+    margin-top: 24px;
+    color: var(--vino);
+    text-decoration: underline;
+    font-weight: 500;
+}

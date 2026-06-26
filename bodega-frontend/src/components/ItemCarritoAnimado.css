@@ -1,0 +1,82 @@
+.item-carrito {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 10px;
+    border-radius: var(--radio-chico);
+    border-bottom: 1px solid rgba(15, 10, 12, 0.05);
+    transition: transform 0.25s ease, background-color 0.25s ease;
+}
+
+.item-carrito-destello {
+    transform: scale(1.015);
+    background-color: rgba(114, 47, 55, 0.05);
+}
+
+.item-carrito-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.item-carrito-nombre {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--texto-oscuro);
+}
+
+.item-carrito-detalle {
+    font-size: 13px;
+    color: var(--texto-suave);
+}
+
+.item-carrito-controles {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 6px;
+}
+
+.item-carrito-boton-control {
+    background-color: rgba(15, 10, 12, 0.05);
+    border: 1px solid rgba(15, 10, 12, 0.08);
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--texto-oscuro);
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.item-carrito-boton-control:hover {
+    background-color: rgba(114, 47, 55, 0.12);
+    color: var(--vino);
+}
+
+.item-carrito-boton-eliminar {
+    background: none;
+    border: none;
+    color: var(--terracota);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 0;
+}
+
+.item-carrito-boton-eliminar:hover {
+    text-decoration: underline;
+}
+
+.item-carrito-subtotal {
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--vino);
+    transition: color 0.25s ease;
+}
+
+.item-carrito-subtotal-activo {
+    color: var(--terracota);
+}

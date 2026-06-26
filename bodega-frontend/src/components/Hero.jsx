@@ -1,43 +1,37 @@
 import React from 'react';
+import './Hero.css';
 
 const Hero = ({ alClickExplorar }) => {
     return (
-        <header style={styles.hero}>
-            <div style={styles.overlay}>
-                <h1 style={styles.titulo}>El Legado de la Tierra</h1>
-                <p style={styles.subtitulo}>Vinos de precisión nacidos al pie de los Andes mendocinos.</p>
-                {/* Enlace puramente HTML nativo */}
-                <a 
-                    onClick={alClickExplorar} 
-                    style={{
-                        padding: '12px 24px',
-                        backgroundColor: '#1e1415',
-                        color: '#fff',
-                        textDecoration: 'none',
-                        borderRadius: '5px',
-                        border: '1px solid #fff',
-                        display: 'inline-block',
-                        fontFamily: '"Inter", sans-serif',
-                        fontSize: '13px',
-                        letterSpacing: '2px',
-                        cursor: 'pointer'
-                    }}
-                >
-                    Explorar Cava
-                </a>
+        <header className="hero">
+            <div className="hero-fondo" aria-hidden="true">
+                <div className="hero-fondo-textura" />
+                <div className="hero-degradado" />
+            </div>
+
+            <div className="hero-horizonte" aria-hidden="true">
+                <svg viewBox="0 0 1200 160" preserveAspectRatio="none">
+                    <path d="M0,160 L0,100 L90,55 L180,95 L280,20 L370,80 L460,45 L560,90 L660,15 L760,75 L860,40 L960,85 L1060,30 L1160,70 L1200,55 L1200,160 Z" />
+                </svg>
+            </div>
+
+            <div className="hero-contenido">
+                <span className="hero-marca">BODEGA MAIPÚ · MENDOZA</span>
+                <h1 className="hero-titulo">El legado de la tierra</h1>
+                <p className="hero-subtitulo">
+                    Vinos de precisión nacidos al pie de los Andes mendocinos, donde el sol y la altura
+                    moldean cada cosecha.
+                </p>
+                <button className="hero-boton" onClick={alClickExplorar}>
+                    Explorar la cava
+                </button>
+            </div>
+
+            <div className="hero-scroll-indicador" aria-hidden="true">
+                <span className="hero-scroll-linea" />
             </div>
         </header>
     );
-};
-
-const styles = {
-    hero: {
-        height: '60vh', backgroundColor: '#1e1415', backgroundSize: 'cover', backgroundPosition: 'center',
-        position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: '"Playfair Display", serif'
-    },
-    overlay: { textAlign: 'center', color: '#ffffff', padding: '20px' },
-    titulo: { fontSize: '48px', fontWeight: '300', letterSpacing: '2px', marginBottom: '15px', color: '#fcfaf7' },
-    subtitulo: { fontFamily: '"Inter", sans-serif', fontSize: '16px', color: '#d4c3b3', letterSpacing: '1px', marginBottom: '30px' }
 };
 
 export default Hero;

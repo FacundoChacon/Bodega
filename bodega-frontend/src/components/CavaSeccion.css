@@ -1,0 +1,102 @@
+.cava-seccion {
+    padding: 110px 0;
+    background-color: var(--crema-suave);
+    position: relative;
+    scroll-margin-top: 90px;
+    min-height: 500px;
+}
+
+.cava-eyebrow {
+    display: block;
+    text-align: center;
+}
+
+.cava-titulo {
+    font-size: clamp(30px, 4vw, 40px);
+    text-align: center;
+    margin-top: 12px;
+}
+
+.cava-subtitulo {
+    text-align: center;
+    color: var(--texto-suave);
+    margin-bottom: 48px;
+    font-size: 15px;
+}
+
+.cava-carrusel-fila {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    gap: 10px;
+}
+
+.cava-ventana {
+    width: 100%;
+    overflow: hidden;
+    padding: 10px 5px 30px;
+}
+
+.cava-riel {
+    display: flex;
+    gap: 30px;
+    flex-wrap: nowrap;
+    justify-content: center;
+}
+
+.cava-tarjeta-wrapper {
+    min-width: 300px;
+    max-width: 340px;
+    flex: 0 0 auto;
+    display: flex;
+}
+
+.cava-sin-resultados {
+    color: var(--texto-suave);
+    padding: 60px 0;
+}
+
+.cava-paginacion-texto {
+    text-align: center;
+    margin-top: 12px;
+    color: var(--texto-suave);
+    font-size: 13px;
+    letter-spacing: 0.5px;
+}
+
+.cava-flecha {
+    position: absolute;
+    z-index: 10;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    color: var(--crema-suave);
+    background-color: var(--vino);
+    border: none;
+    font-size: 18px;
+    box-shadow: 0 8px 24px -8px rgba(114, 47, 55, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.25s ease, transform 0.2s ease;
+}
+
+.cava-flecha:not(:disabled):hover {
+    background-color: var(--terracota);
+    transform: scale(1.06);
+}
+
+.cava-flecha:disabled {
+    background-color: #ddd6cd;
+    cursor: not-allowed;
+}
+
+.cava-flecha-izq { left: -22px; }
+.cava-flecha-der { right: -22px; }
+
+@media (max-width: 700px) {
+    .cava-flecha-izq { left: 4px; }
+    .cava-flecha-der { right: 4px; }
+    .cava-flecha { width: 38px; height: 38px; font-size: 15px; }
+}

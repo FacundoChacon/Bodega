@@ -1,0 +1,159 @@
+.carrito-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(15, 10, 12, 0.4);
+    z-index: 2000;
+    display: flex;
+    justify-content: flex-end;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+    cursor: pointer;
+}
+
+.carrito-overlay-visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.carrito-sidebar {
+    width: 420px;
+    height: 100%;
+    background-color: var(--crema-suave);
+    box-shadow: -12px 0 40px rgba(15, 10, 12, 0.2);
+    display: flex;
+    flex-direction: column;
+    padding: 32px;
+    box-sizing: border-box;
+    cursor: default;
+    transform: translateX(100%);
+    transition: transform 0.45s var(--ease-suave);
+}
+
+.carrito-sidebar-abierto {
+    transform: translateX(0);
+}
+
+.carrito-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(15, 10, 12, 0.08);
+    padding-bottom: 18px;
+    transition: border-color 0.25s ease;
+}
+
+.carrito-header-destello {
+    border-bottom-color: rgba(156, 59, 46, 0.3);
+}
+
+.carrito-titulo {
+    font-family: var(--fuente-display);
+    font-size: 23px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    color: var(--texto-oscuro);
+}
+
+.carrito-boton-cerrar {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: var(--texto-suave);
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.carrito-boton-cerrar:hover {
+    color: var(--vino);
+    transform: rotate(90deg);
+}
+
+.carrito-lista {
+    flex: 1;
+    overflow-y: auto;
+    margin-top: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-right: 6px;
+}
+
+.carrito-vacio {
+    text-align: center;
+    margin-top: 50px;
+    color: var(--texto-suave);
+}
+
+.carrito-footer {
+    border-top: 1px solid rgba(15, 10, 12, 0.08);
+    padding-top: 20px;
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.carrito-seccion-pago {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.carrito-label-pago {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--texto-suave);
+}
+
+.carrito-select-pago {
+    padding: 12px 14px;
+    font-size: 13.5px;
+    border: 1px solid rgba(15, 10, 12, 0.12);
+    border-radius: var(--radio-chico);
+    background-color: var(--blanco);
+    color: var(--texto-oscuro);
+    outline: none;
+}
+
+.carrito-total-contenedor {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--texto-oscuro);
+}
+
+.carrito-total-precio {
+    font-family: var(--fuente-display);
+    font-size: 24px;
+    color: var(--vino);
+}
+
+.carrito-boton-confirmar {
+    border: none;
+    padding: 17px;
+    background-color: var(--vino);
+    color: var(--crema-suave);
+    font-weight: 600;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    font-size: 12.5px;
+    border-radius: var(--radio-chico);
+    box-shadow: 0 10px 24px -8px rgba(114, 47, 55, 0.45);
+    transition: background-color 0.25s ease, transform 0.2s ease;
+}
+
+.carrito-boton-confirmar:hover {
+    background-color: var(--terracota);
+    transform: translateY(-2px);
+}
+
+@media (max-width: 480px) {
+    .carrito-sidebar {
+        width: 100%;
+        padding: 24px;
+    }
+}

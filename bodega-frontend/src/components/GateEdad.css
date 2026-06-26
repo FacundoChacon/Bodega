@@ -1,0 +1,145 @@
+.gate-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: radial-gradient(circle at 50% 30%, #1a1012 0%, var(--negro-vino) 70%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    transition: opacity 0.6s var(--ease-suave), visibility 0.6s var(--ease-suave);
+}
+
+.gate-saliendo {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.gate-horizonte {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 22vh;
+    opacity: 0.5;
+}
+
+.gate-horizonte svg {
+    width: 100%;
+    height: 100%;
+}
+
+.gate-horizonte path {
+    fill: var(--vino);
+    opacity: 0.35;
+}
+
+.gate-contenido {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    color: var(--crema);
+    padding: 40px;
+    max-width: 520px;
+    animation: gateAparecer 0.9s var(--ease-suave) both;
+}
+
+@keyframes gateAparecer {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.gate-marca {
+    display: block;
+    font-size: 12px;
+    letter-spacing: 4px;
+    color: var(--dorado);
+    font-weight: 600;
+    margin-bottom: 28px;
+}
+
+.gate-titulo {
+    font-family: var(--fuente-display);
+    font-size: 42px;
+    font-weight: 400;
+    margin-bottom: 16px;
+    color: var(--crema-suave);
+}
+
+.gate-texto {
+    font-size: 15px;
+    line-height: 1.7;
+    color: rgba(244, 237, 226, 0.65);
+    margin-bottom: 36px;
+}
+
+.gate-botones {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+}
+
+.gate-boton {
+    border: 1px solid var(--crema);
+    background: transparent;
+    color: var(--crema);
+    padding: 14px 36px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    border-radius: var(--radio-chico);
+    transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
+}
+
+.gate-boton-si {
+    background-color: var(--vino);
+    border-color: var(--vino);
+}
+
+.gate-boton-si:hover {
+    background-color: var(--terracota);
+    border-color: var(--terracota);
+    transform: translateY(-2px);
+}
+
+.gate-boton-no {
+    color: rgba(244, 237, 226, 0.7);
+    border-color: rgba(244, 237, 226, 0.3);
+}
+
+.gate-boton-no:hover {
+    border-color: var(--crema);
+    color: var(--crema);
+}
+
+.gate-rechazo {
+    text-align: center;
+    color: var(--crema);
+    max-width: 420px;
+    padding: 40px;
+}
+
+.gate-rechazo-icono {
+    font-size: 40px;
+    display: block;
+    margin-bottom: 20px;
+}
+
+.gate-rechazo h2 {
+    font-family: var(--fuente-display);
+    font-size: 26px;
+    font-weight: 400;
+    margin-bottom: 14px;
+}
+
+.gate-rechazo p {
+    color: rgba(244, 237, 226, 0.6);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+@media (max-width: 600px) {
+    .gate-titulo { font-size: 30px; }
+    .gate-botones { flex-direction: column; }
+}

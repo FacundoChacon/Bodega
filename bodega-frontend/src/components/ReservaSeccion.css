@@ -1,0 +1,183 @@
+.reserva-seccion {
+    padding: 120px 0;
+    background-color: var(--crema-suave);
+}
+
+.reserva-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 70px;
+    align-items: center;
+}
+
+.reserva-info {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.reserva-titulo {
+    font-size: clamp(28px, 3.6vw, 38px);
+}
+
+.reserva-descripcion {
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--texto-suave);
+}
+
+.reserva-detalle {
+    margin-top: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.reserva-detalle p {
+    font-size: 14px;
+    color: var(--texto-oscuro);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.reserva-detalle strong {
+    font-size: 10.5px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--vino);
+    font-weight: 600;
+}
+
+.reserva-bloque-form {
+    background-color: var(--blanco);
+    padding: 44px;
+    border-radius: var(--radio-grande);
+    box-shadow: 0 30px 60px -25px rgba(15, 10, 12, 0.18);
+    border: 1px solid rgba(114, 47, 55, 0.06);
+}
+
+.reserva-formulario {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.reserva-form-titulo {
+    font-family: var(--fuente-display);
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: var(--texto-oscuro);
+}
+
+.reserva-input,
+.reserva-select {
+    padding: 13px 16px;
+    border-radius: var(--radio-chico);
+    border: 1px solid rgba(15, 10, 12, 0.12);
+    font-size: 14px;
+    outline: none;
+    background-color: var(--crema-suave);
+    color: var(--texto-oscuro);
+    transition: border-color 0.25s ease, background-color 0.25s ease;
+}
+
+.reserva-input:focus,
+.reserva-select:focus {
+    border-color: var(--vino);
+    background-color: var(--blanco);
+}
+
+.reserva-fila {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.reserva-boton-submit {
+    border: none;
+    padding: 16px;
+    background-color: var(--vino);
+    color: var(--crema-suave);
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-size: 12px;
+    border-radius: var(--radio-chico);
+    margin-top: 8px;
+    transition: background-color 0.25s ease, transform 0.2s ease;
+}
+
+.reserva-boton-submit:hover {
+    background-color: var(--terracota);
+    transform: translateY(-2px);
+}
+
+.reserva-error {
+    color: var(--terracota);
+    font-size: 13px;
+    font-weight: 500;
+    background-color: rgba(156, 59, 46, 0.08);
+    padding: 10px 14px;
+    border-radius: var(--radio-chico);
+}
+
+.reserva-exito {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 0;
+}
+
+.reserva-exito-icono {
+    font-size: 36px;
+}
+
+.reserva-exito h3 {
+    font-family: var(--fuente-display);
+    font-size: 24px;
+    color: var(--texto-oscuro);
+    font-weight: 500;
+}
+
+.reserva-exito p {
+    font-size: 14px;
+    color: var(--texto-suave);
+    line-height: 1.6;
+}
+
+.reserva-btn-volver {
+    margin-top: 10px;
+    background: none;
+    border: 1px solid var(--vino);
+    color: var(--vino);
+    padding: 10px 24px;
+    border-radius: var(--radio-chico);
+    font-size: 12px;
+    letter-spacing: 1px;
+    transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.reserva-btn-volver:hover {
+    background-color: var(--vino);
+    color: var(--crema-suave);
+}
+
+@media (max-width: 900px) {
+    .reserva-grid {
+        grid-template-columns: 1fr;
+        gap: 50px;
+    }
+
+    .reserva-bloque-form {
+        padding: 32px 24px;
+    }
+}
+
+@media (max-width: 600px) {
+    .reserva-seccion { padding: 80px 0; }
+    .reserva-fila { grid-template-columns: 1fr; }
+}

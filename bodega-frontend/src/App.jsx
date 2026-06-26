@@ -1,17 +1,22 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import CavaSeccion from './components/CavaSeccion';
 import CarritoModal from './components/CarritoModal';
 import { useCarrito } from './hooks/useCarrito';
-import PagoExitoso from "./components/PagoExitoso";
+import PagoExitoso from './components/PagoExitoso';
 import HistoriaSeccion from './components/HistoriaSeccion';
+import ReservaSeccion from './components/ReservaSeccion';
+import GateEdad from './components/GateEdad';
+import './App.css';
 
 const App = () => {
     const [verCarrito, setVerCarrito] = useState(false);
     const [paginaActual, setPaginaActual] = useState(0);
+    const [mostrarGate, setMostrarGate] = useState(false);
     const cavaRef = useRef(null);
     const historiaRef = useRef(null);
+    const restoRef = useRef(null);
 
     const {
         carrito,
@@ -22,19 +27,31 @@ const App = () => {
         iniciarPagoReal
     } = useCarrito(setVerCarrito, setPaginaActual);
 
+    // VERIFICA SI YA SE CONFIRMÓ LA MAYORÍA DE EDAD EN ESTA SESIÓN
+    useEffect(() => {
+        const yaConfirmado = sessionStorage.getItem('mayorDeEdadConfirmado');
+        if (!yaConfirmado) {
+            setMostrarGate(true);
+        }
+    }, []);
+
     const scrollSuaveACava = () => {
         if (cavaRef.current) {
             const posicionDestino = cavaRef.current.getBoundingClientRect().top + window.scrollY;
-            window.scrollTo({
-                top: posicionDestino - 90,
-                behavior: 'smooth'
-            });
+            window.scrollTo({ top: posicionDestino - 90, behavior: 'smooth' });
         }
     };
 
     const scrollSuaveAHistoria = () => {
         if (historiaRef.current) {
             const posicionDestino = historiaRef.current.getBoundingClientRect().top + window.scrollY;
+            window.scrollTo({ top: posicionDestino - 90, behavior: 'smooth' });
+        }
+    };
+
+    const scrollSuaveAResto = () => {
+        if (restoRef.current) {
+            const posicionDestino = restoRef.current.getBoundingClientRect().top + window.scrollY;
             window.scrollTo({ top: posicionDestino - 90, behavior: 'smooth' });
         }
     };
@@ -46,19 +63,24 @@ const App = () => {
 
     // Si no está en esa URL, la aplicación sigue mostrando el catálogo normal:
     return (
-        <div style={{ backgroundColor: '#fdfdfb', minHeight: '100vh' }}>
-            <Navbar 
-                cantidadCarrito={totalBotellas} 
-                alAbrirCarrito={() => setVerCarrito(true)} 
-                alClickCava={scrollSuaveACava} 
+        <div className="app-fondo">
+            {mostrarGate && <GateEdad alConfirmar={() => setMostrarGate(false)} />}
+
+            <Navbar
+                cantidadCarrito={totalBotellas}
+                alAbrirCarrito={() => setVerCarrito(true)}
+                alClickCava={scrollSuaveACava}
                 alClickHistoria={scrollSuaveAHistoria}
+                alClickResto={scrollSuaveAResto}
             />
-            
+
             <Hero alClickExplorar={scrollSuaveACava} />
-            
+
             <HistoriaSeccion historiaRef={historiaRef} />
-            
-            <CavaSeccion 
+
+            <ReservaSeccion reservaRef={restoRef} />
+
+            <CavaSeccion
                 cavaRef={cavaRef}
                 carrito={carrito}
                 agregarAlCarrito={agregarAlCarrito}
@@ -66,14 +88,19 @@ const App = () => {
                 setPaginaActual={setPaginaActual}
             />
 
-            <footer style={styles.footer}>
-                <p>© 2026 Bodega Maipú - Mendoza, Argentina</p>
+            <footer className="footer">
+                <div className="contenedor footer-contenido">
+                    <span className="footer-marca">BODEGA MAIPÚ</span>
+                    <p className="footer-texto">Mendoza, Argentina · Ruta Provincial 33, km 7,5</p>
+                    <p className="footer-legal">Beber con moderación. Prohibida su venta a menores de 18 años.</p>
+                    <p className="footer-copy">© 2026 Bodega Maipú</p>
+                </div>
             </footer>
 
-            <CarritoModal 
-                mostrar={verCarrito} 
-                alCerrar={() => setVerCarrito(false)} 
-                items={carrito} 
+            <CarritoModal
+                mostrar={verCarrito}
+                alCerrar={() => setVerCarrito(false)}
+                items={carrito}
                 alConfirmarCompra={iniciarPagoReal}
                 alRestarCantidad={restarDelCarrito}
                 alEliminarItem={eliminarDelCarrito}
@@ -81,10 +108,6 @@ const App = () => {
             />
         </div>
     );
-};
-
-const styles = {
-    footer: { height: '70vh', backgroundColor: '#1e1415', marginTop: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }
 };
 
 export default App;

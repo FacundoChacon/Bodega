@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import "./PagoExitoso.css";
 
 export default function PagoExitoso() {
   const [procesando, setProcesando] = useState(true);
@@ -56,8 +57,9 @@ export default function PagoExitoso() {
 
   if (procesando) {
     return (
-      <div style={{ textAlign: "center", marginTop: "100px", fontFamily: "sans-serif" }}>
-        <h2>Procesando tu pedido... 🍷</h2>
+      <div className="pago-pantalla pago-procesando">
+        <div className="pago-icono-girando">🍷</div>
+        <h2>Procesando tu pedido</h2>
         <p>Estamos confirmando tu pago y actualizando el stock.</p>
       </div>
     );
@@ -65,22 +67,24 @@ export default function PagoExitoso() {
 
   if (error) {
     return (
-      <div style={{ textAlign: "center", marginTop: "100px", color: "red", fontFamily: "sans-serif" }}>
-        <h2>⚠️ Alerta en el proceso</h2>
+      <div className="pago-pantalla pago-error">
+        <span className="pago-icono">⚠</span>
+        <h2>Alerta en el proceso</h2>
         <p>{error}</p>
-        <a href="/" style={{ color: "blue" }}>Volver a la tienda</a>
+        <a href="/" className="pago-enlace">Volver a la tienda</a>
       </div>
     );
   }
 
   return (
-    <div style={{ textAlign: "center", marginTop: "100px", fontFamily: "sans-serif" }}>
-      <h1 style={{ color: "green" }}>¡Muchas gracias por tu compra! 🎉</h1>
-      <p style={{ fontSize: "18px" }}>Tu pago fue procesado y la cava se actualizó correctamente.</p>
-      
-      {/* Mensaje estético avisando que se va solo */}
-      <p style={{ color: "gray", fontStyle: "italic", marginTop: "20px" }}>
-        Redirigiéndote a la Cava principal en 3 segundos... 🕒
+    <div className="pago-pantalla pago-exito">
+      <span className="pago-icono">✓</span>
+      <h1>¡Muchas gracias por tu compra!</h1>
+      <p className="pago-texto-principal">
+        Tu pago fue procesado y la cava se actualizó correctamente.
+      </p>
+      <p className="pago-texto-secundario">
+        Redirigiéndote a la cava principal en unos segundos…
       </p>
     </div>
   );
