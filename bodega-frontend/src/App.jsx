@@ -4,12 +4,14 @@ import Hero from './components/Hero';
 import CavaSeccion from './components/CavaSeccion';
 import CarritoModal from './components/CarritoModal';
 import { useCarrito } from './hooks/useCarrito';
-import PagoExitoso from "./components/PagoExitoso"; // 👈 Tu componente de stock
+import PagoExitoso from "./components/PagoExitoso";
+import HistoriaSeccion from './components/HistoriaSeccion';
 
 const App = () => {
     const [verCarrito, setVerCarrito] = useState(false);
     const [paginaActual, setPaginaActual] = useState(0);
     const cavaRef = useRef(null);
+    const historiaRef = useRef(null);
 
     const {
         carrito,
@@ -30,6 +32,13 @@ const App = () => {
         }
     };
 
+    const scrollSuaveAHistoria = () => {
+        if (historiaRef.current) {
+            const posicionDestino = historiaRef.current.getBoundingClientRect().top + window.scrollY;
+            window.scrollTo({ top: posicionDestino - 90, behavior: 'smooth' });
+        }
+    };
+
     // SI LA URL ES /pago-exitoso, MOSTRAMOS EL COMPONENTE DE STOCK
     if (window.location.pathname === "/pago-exitoso") {
         return <PagoExitoso />;
@@ -42,9 +51,12 @@ const App = () => {
                 cantidadCarrito={totalBotellas} 
                 alAbrirCarrito={() => setVerCarrito(true)} 
                 alClickCava={scrollSuaveACava} 
+                alClickHistoria={scrollSuaveAHistoria}
             />
             
             <Hero alClickExplorar={scrollSuaveACava} />
+            
+            <HistoriaSeccion historiaRef={historiaRef} />
             
             <CavaSeccion 
                 cavaRef={cavaRef}

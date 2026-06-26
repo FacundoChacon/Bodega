@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const Navbar = ({ cantidadCarrito, alAbrirCarrito, alClickCava }) => {
+const Navbar = ({ cantidadCarrito, alAbrirCarrito, alClickCava, alClickHistoria }) => {
     const [enHover, setEnHover] = useState(false);
     const [animarClick, setAnimarClick] = useState(false);
 
@@ -27,6 +27,9 @@ const Navbar = ({ cantidadCarrito, alAbrirCarrito, alClickCava }) => {
                 </div>
 
                 <div style={styles.menuDerecho}>
+                    <button onClick={alClickHistoria} style={styles.enlaceBtn}>
+                        NUESTRA HISTORIA
+                    </button>
                     <button onClick={alClickCava} style={styles.enlaceBtn}>
                         NUESTRA CAVA
                     </button>
